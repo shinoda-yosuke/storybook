@@ -1,0 +1,21 @@
+# Logs
+logs
+*.log
+
+node_modules
+dist
+*.local
+
+# Storybook の出力
+storybook-static
+
+# TanStack Router の生成途中のファイル
+.tanstack
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+
+*storybook.log
