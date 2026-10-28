@@ -1,0 +1,23 @@
+import type { Preview } from '@storybook/tanstack-react'
+
+// Tailwind と shadcn のテーマ（色・角丸・フォント）を読み込む
+import '../src/index.css'
+
+const preview: Preview = {
+  parameters: {
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/i,
+      },
+    },
+    options: {
+      storySort: {
+        // 小さい部品から順に並べる
+        order: ['Elements', 'Components', 'Layouts'],
+      },
+    },
+  },
+}
+
+export default preview
