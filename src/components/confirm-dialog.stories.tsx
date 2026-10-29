@@ -36,8 +36,8 @@ const meta = {
     onConfirm: { control: false, description: '確定時の処理。親で open を false にして閉じる' },
     onCancel: { control: false, description: 'キャンセル時の処理。Esc キーでも呼ばれる' },
   },
-  render: function Render() {
-    const [args, updateArgs] = useArgs<ConfirmDialogProps>()
+  render: function Render(args) {
+    const [, updateArgs] = useArgs<ConfirmDialogProps>()
     const [result, setResult] = useState('未操作')
 
     return (

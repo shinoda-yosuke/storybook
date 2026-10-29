@@ -41,8 +41,8 @@ const meta = {
     onConfirm: { control: false, description: 'チェック済みの場合だけ呼ばれる確定時の処理' },
     onCancel: { control: false, description: 'キャンセル時の処理。Esc キーでも呼ばれる' },
   },
-  render: function Render() {
-    const [args, updateArgs] = useArgs<CheckboxConfirmDialogProps>()
+  render: function Render(args) {
+    const [, updateArgs] = useArgs<CheckboxConfirmDialogProps>()
     const [result, setResult] = useState('未操作')
 
     return (
