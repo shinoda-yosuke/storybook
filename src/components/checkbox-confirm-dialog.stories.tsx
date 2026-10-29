@@ -2,7 +2,11 @@ import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/tanstack-react'
 import { fn } from 'storybook/test'
 
-import { CheckboxConfirmDialog } from '@/components/checkbox-confirm-dialog'
+import {
+  CheckboxConfirmDialog,
+  CheckboxConfirmDialogHeader,
+  CheckboxConfirmDialogContent,
+} from '@/components/checkbox-confirm-dialog'
 import { Button } from '@/elements/button'
 
 const meta = {
@@ -14,14 +18,18 @@ const meta = {
     docs: {
       description: {
         component:
-          'BaseDialog を包み、チェックするまで確定できないダイアログ。本文は `children` に表などの任意のコンポーネントを渡す。チェック状態は内部で管理し、開くたびに未チェックに戻る。ボタン構成と閉じ方は固定で、Esc キーとキャンセルボタンは `onCancel` を呼ぶ。背景のクリックでは閉じない。最初のフォーカスは見出しに置く。開閉は親が `open` で管理し、各コールバックで閉じる。',
+          'BaseDialog を包み、チェックするまで確定できないダイアログ。子要素に CheckboxConfirmDialogHeader と CheckboxConfirmDialogContent をこの順で1つずつ渡す。見出しには inline code などの JSX、本文には表などを入れられる。チェック状態は内部で管理し、開くたびに未チェックに戻る。ボタン構成と閉じ方は親側で固定する。背景のクリックでは閉じず、Esc キーはキャンセルとして扱う。最初のフォーカスは見出しに置く。開閉は親が `open` で管理し、各コールバックで閉じる。',
       },
     },
   },
   args: {
     open: false,
-    title: '次に進む前に',
-    children: '注意事項を確認し、チェックを入れてから次に進んでください。',
+    children: [
+      <CheckboxConfirmDialogHeader>次に進む前に</CheckboxConfirmDialogHeader>,
+      <CheckboxConfirmDialogContent>
+        注意事項を確認し、チェックを入れてから次に進んでください。
+      </CheckboxConfirmDialogContent>,
+    ],
     checkboxLabel: '注意事項を確認しました',
     confirmLabel: '次へ',
     cancelLabel: 'キャンセル',
@@ -30,8 +38,7 @@ const meta = {
   },
   argTypes: {
     open: { control: false, description: '表示するかどうか。親が管理する。表示例はボタンで開閉する' },
-    title: { control: 'text', description: '見出し' },
-    children: { control: false, description: '本文。文字列や任意のコンポーネント（ReactNode）を渡す' },
+    children: { control: false, description: 'CheckboxConfirmDialogHeader と CheckboxConfirmDialogContent をこの順で1つずつ渡す' },
     checkboxLabel: { control: 'text', description: 'チェックして確認する内容' },
     confirmLabel: { control: 'text', description: 'チェック後に進むボタンの文言' },
     cancelLabel: { control: 'text', description: 'キャンセルボタンの文言' },
@@ -62,7 +69,8 @@ const meta = {
             setOpen(false)
           }}
         >
-          {args.children}
+          {args.children[0]}
+          {args.children[1]}
         </CheckboxConfirmDialog>
       </div>
     )
@@ -77,8 +85,12 @@ export const Default: Story = {}
 
 export const CustomLabels: Story = {
   args: {
-    title: '申し込み内容の確認',
-    children: '利用条件を確認し、同意したうえで申し込んでください。',
+    children: [
+      <CheckboxConfirmDialogHeader>申し込み内容の確認</CheckboxConfirmDialogHeader>,
+      <CheckboxConfirmDialogContent>
+        利用条件を確認し、同意したうえで申し込んでください。
+      </CheckboxConfirmDialogContent>,
+    ],
     checkboxLabel: '利用条件に同意します',
     confirmLabel: '申し込む',
     cancelLabel: '戻る',
@@ -113,9 +125,26 @@ MembersTable.displayName = 'MembersTable'
 
 export const WithTable: Story = {
   args: {
-    title: 'メンバーを招待しますか？',
-    children: <MembersTable />,
+    children: [
+      <CheckboxConfirmDialogHeader>メンバーを招待しますか？</CheckboxConfirmDialogHeader>,
+      <CheckboxConfirmDialogContent><MembersTable /></CheckboxConfirmDialogContent>,
+    ],
     checkboxLabel: '招待先と権限を確認しました',
     confirmLabel: '招待する',
+  },
+}
+
+export const WithInlineCode: Story = {
+  args: {
+    children: [
+      <CheckboxConfirmDialogHeader>
+        ID: <code>hogehoge</code> を変更しますか？
+      </CheckboxConfirmDialogHeader>,
+      <CheckboxConfirmDialogContent>
+        変更内容を確認し、チェックを入れてから進んでください。
+      </CheckboxConfirmDialogContent>,
+    ],
+    checkboxLabel: '変更内容を確認しました',
+    confirmLabel: '変更する',
   },
 }

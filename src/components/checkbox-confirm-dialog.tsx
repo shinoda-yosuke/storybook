@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactNode } from 'react'
+import { useRef, useState, type ReactElement } from 'react'
 
 import {
   BaseDialog,
@@ -8,13 +8,20 @@ import {
   BaseDialogHeader,
   BaseDialogTitle,
 } from '@/components/base-dialog'
+import {
+  assertConfirmationDialogParts,
+  confirmationDialogTitleClassName,
+  type ConfirmationDialogSectionProps,
+} from '@/components/confirmation-dialog-parts'
 import { Button } from '@/elements/button'
 import { Checkbox } from '@/elements/checkbox'
 
 type CheckboxConfirmDialogProps = {
   open: boolean
-  title: string
-  children: ReactNode
+  children: [
+    ReactElement<ConfirmationDialogSectionProps, typeof CheckboxConfirmDialogHeader>,
+    ReactElement<ConfirmationDialogSectionProps, typeof CheckboxConfirmDialogContent>,
+  ]
   checkboxLabel: string
   confirmLabel?: string
   cancelLabel?: string
@@ -24,7 +31,6 @@ type CheckboxConfirmDialogProps = {
 
 function CheckboxConfirmDialog({
   open,
-  title,
   children,
   checkboxLabel,
   confirmLabel = '次へ',
@@ -33,7 +39,13 @@ function CheckboxConfirmDialog({
   onCancel,
 }: CheckboxConfirmDialogProps) {
   const [checked, setChecked] = useState(false)
-  const titleRef = useRef<HTMLHeadingElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  assertConfirmationDialogParts(
+    children,
+    CheckboxConfirmDialogHeader,
+    CheckboxConfirmDialogContent,
+    'CheckboxConfirmDialog',
+  )
 
   // 親から閉じた場合も、次に開くときは未チェックから始める。
   if (!open && checked) {
@@ -49,18 +61,14 @@ function CheckboxConfirmDialog({
       }}
     >
       <BaseDialogContent
+        ref={contentRef}
         showCloseButton={false}
-        initialFocus={titleRef}
+        initialFocus={() =>
+          contentRef.current?.querySelector<HTMLElement>('[data-slot="dialog-title"]') ?? true
+        }
         className="max-h-[calc(100dvh-2rem)] overflow-y-auto"
       >
-        <BaseDialogHeader>
-          <BaseDialogTitle ref={titleRef} tabIndex={-1} className="outline-none">
-            {title}
-          </BaseDialogTitle>
-        </BaseDialogHeader>
-        <div className="min-w-0 overflow-x-auto text-sm text-muted-foreground">
-          {children}
-        </div>
+        {children}
         <label className="flex cursor-pointer items-start gap-2 text-sm leading-5">
           <Checkbox checked={checked} onCheckedChange={setChecked} className="mt-0.5" />
           {checkboxLabel}
@@ -83,4 +91,30 @@ function CheckboxConfirmDialog({
   )
 }
 
-export { CheckboxConfirmDialog, type CheckboxConfirmDialogProps }
+function CheckboxConfirmDialogHeader({ children }: ConfirmationDialogSectionProps) {
+  return (
+    <BaseDialogHeader>
+      <BaseDialogTitle tabIndex={-1} className={confirmationDialogTitleClassName}>
+        {children}
+      </BaseDialogTitle>
+    </BaseDialogHeader>
+  )
+}
+
+function CheckboxConfirmDialogContent({ children }: ConfirmationDialogSectionProps) {
+  return (
+    <div className="min-w-0 overflow-x-auto text-sm text-muted-foreground">
+      {children}
+    </div>
+  )
+}
+
+CheckboxConfirmDialogHeader.displayName = 'CheckboxConfirmDialogHeader'
+CheckboxConfirmDialogContent.displayName = 'CheckboxConfirmDialogContent'
+
+export {
+  CheckboxConfirmDialog,
+  CheckboxConfirmDialogHeader,
+  CheckboxConfirmDialogContent,
+  type CheckboxConfirmDialogProps,
+}

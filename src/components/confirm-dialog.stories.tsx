@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/tanstack-react'
 import { fn } from 'storybook/test'
 
-import { ConfirmDialog } from '@/components/confirm-dialog'
+import { ConfirmDialog, ConfirmDialogHeader, ConfirmDialogContent } from '@/components/confirm-dialog'
 import { Button } from '@/elements/button'
 
 const meta = {
@@ -14,14 +14,18 @@ const meta = {
     docs: {
       description: {
         component:
-          'BaseDialog を包み、キャンセルと確定の2つの操作に絞ったダイアログ。本文は `children` に文字列や任意のコンポーネントを渡す。右上の閉じるボタンはなく、背景のクリックでは閉じない。Esc キーはキャンセルとして扱う。最初のフォーカスは見出しに置き、本文の先頭から読み進められるようにする。開閉は親が `open` で管理し、`onConfirm` または `onCancel` の中で閉じる。',
+          'BaseDialog を包み、キャンセルと確定の2つの操作に絞ったダイアログ。子要素に ConfirmDialogHeader と ConfirmDialogContent をこの順で1つずつ渡す。見出しには inline code などの JSX、本文には表やリストなどを入れられる。ボタン構成と閉じ方は親側で固定する。背景のクリックでは閉じず、Esc キーはキャンセルとして扱う。最初のフォーカスは見出しに置く。開閉は親が `open` で管理し、各コールバックで閉じる。',
       },
     },
   },
   args: {
     open: false,
-    title: '設定を適用しますか？',
-    children: '現在の設定を適用します。キャンセルすると、設定は変更されません。',
+    children: [
+      <ConfirmDialogHeader>設定を適用しますか？</ConfirmDialogHeader>,
+      <ConfirmDialogContent>
+        現在の設定を適用します。キャンセルすると、設定は変更されません。
+      </ConfirmDialogContent>,
+    ],
     confirmLabel: '確認',
     cancelLabel: 'キャンセル',
     onConfirm: fn(),
@@ -29,8 +33,7 @@ const meta = {
   },
   argTypes: {
     open: { control: false, description: '表示するかどうか。親が管理する。表示例はボタンで開閉する' },
-    title: { control: 'text', description: '見出し' },
-    children: { control: false, description: '本文。文字列や任意のコンポーネント（ReactNode）を渡す' },
+    children: { control: false, description: 'ConfirmDialogHeader と ConfirmDialogContent をこの順で1つずつ渡す' },
     confirmLabel: { control: 'text', description: '確定ボタンの文言' },
     cancelLabel: { control: 'text', description: 'キャンセルボタンの文言' },
     onConfirm: { control: false, description: '確定時の処理。親で open を false にして閉じる' },
@@ -60,7 +63,8 @@ const meta = {
             setOpen(false)
           }}
         >
-          {args.children}
+          {args.children[0]}
+          {args.children[1]}
         </ConfirmDialog>
       </div>
     )
@@ -75,8 +79,12 @@ export const Default: Story = {}
 
 export const CustomLabels: Story = {
   args: {
-    title: '変更を保存しますか？',
-    children: '変更した内容を保存します。保存せずに編集を続けることもできます。',
+    children: [
+      <ConfirmDialogHeader>変更を保存しますか？</ConfirmDialogHeader>,
+      <ConfirmDialogContent>
+        変更した内容を保存します。保存せずに編集を続けることもできます。
+      </ConfirmDialogContent>,
+    ],
     confirmLabel: '保存する',
     cancelLabel: '編集を続ける',
   },
@@ -84,15 +92,27 @@ export const CustomLabels: Story = {
 
 export const WithList: Story = {
   args: {
-    title: '通知設定を変更しますか？',
-    children: (
-      <div className="space-y-3">
-        <p>次の変更を適用します。</p>
-        <ul className="list-inside list-disc space-y-1">
-          <li>メール通知を有効にする</li>
-          <li>週次レポートを受け取る</li>
-        </ul>
-      </div>
-    ),
+    children: [
+      <ConfirmDialogHeader>通知設定を変更しますか？</ConfirmDialogHeader>,
+      <ConfirmDialogContent>
+        <div className="space-y-3">
+          <p>次の変更を適用します。</p>
+          <ul className="list-inside list-disc space-y-1">
+            <li>メール通知を有効にする</li>
+            <li>週次レポートを受け取る</li>
+          </ul>
+        </div>
+      </ConfirmDialogContent>,
+    ],
+  },
+}
+
+export const WithInlineCode: Story = {
+  args: {
+    children: [
+      <ConfirmDialogHeader>ID: <code>hogehoge</code> を変更しますか？</ConfirmDialogHeader>,
+      <ConfirmDialogContent>この ID に紐づく設定を更新します。</ConfirmDialogContent>,
+    ],
+    confirmLabel: '変更する',
   },
 }

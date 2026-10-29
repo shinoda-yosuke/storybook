@@ -1,4 +1,4 @@
-import { useRef, type ReactNode } from 'react'
+import { useRef, type ReactElement } from 'react'
 
 import {
   BaseDialog,
@@ -8,12 +8,19 @@ import {
   BaseDialogHeader,
   BaseDialogTitle,
 } from '@/components/base-dialog'
+import {
+  assertConfirmationDialogParts,
+  confirmationDialogTitleClassName,
+  type ConfirmationDialogSectionProps,
+} from '@/components/confirmation-dialog-parts'
 import { Button } from '@/elements/button'
 
 type ConfirmDialogProps = {
   open: boolean
-  title: string
-  children: ReactNode
+  children: [
+    ReactElement<ConfirmationDialogSectionProps, typeof ConfirmDialogHeader>,
+    ReactElement<ConfirmationDialogSectionProps, typeof ConfirmDialogContent>,
+  ]
   confirmLabel?: string
   cancelLabel?: string
   onConfirm: () => void
@@ -22,14 +29,14 @@ type ConfirmDialogProps = {
 
 function ConfirmDialog({
   open,
-  title,
   children,
   confirmLabel = '確認',
   cancelLabel = 'キャンセル',
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
-  const titleRef = useRef<HTMLHeadingElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  assertConfirmationDialogParts(children, ConfirmDialogHeader, ConfirmDialogContent, 'ConfirmDialog')
 
   return (
     <BaseDialog
@@ -40,18 +47,14 @@ function ConfirmDialog({
       }}
     >
       <BaseDialogContent
+        ref={contentRef}
         showCloseButton={false}
-        initialFocus={titleRef}
+        initialFocus={() =>
+          contentRef.current?.querySelector<HTMLElement>('[data-slot="dialog-title"]') ?? true
+        }
         className="max-h-[calc(100dvh-2rem)] overflow-y-auto"
       >
-        <BaseDialogHeader>
-          <BaseDialogTitle ref={titleRef} tabIndex={-1} className="outline-none">
-            {title}
-          </BaseDialogTitle>
-        </BaseDialogHeader>
-        <div className="min-w-0 overflow-x-auto text-sm text-muted-foreground">
-          {children}
-        </div>
+        {children}
         <BaseDialogFooter>
           <BaseDialogClose render={<Button variant="outline" />}>
             {cancelLabel}
@@ -63,4 +66,25 @@ function ConfirmDialog({
   )
 }
 
-export { ConfirmDialog, type ConfirmDialogProps }
+function ConfirmDialogHeader({ children }: ConfirmationDialogSectionProps) {
+  return (
+    <BaseDialogHeader>
+      <BaseDialogTitle tabIndex={-1} className={confirmationDialogTitleClassName}>
+        {children}
+      </BaseDialogTitle>
+    </BaseDialogHeader>
+  )
+}
+
+function ConfirmDialogContent({ children }: ConfirmationDialogSectionProps) {
+  return (
+    <div className="min-w-0 overflow-x-auto text-sm text-muted-foreground">
+      {children}
+    </div>
+  )
+}
+
+ConfirmDialogHeader.displayName = 'ConfirmDialogHeader'
+ConfirmDialogContent.displayName = 'ConfirmDialogContent'
+
+export { ConfirmDialog, ConfirmDialogHeader, ConfirmDialogContent, type ConfirmDialogProps }

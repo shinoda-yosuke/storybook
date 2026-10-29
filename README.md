@@ -46,31 +46,41 @@ bunx --bun shadcn@latest add <name>
 
 | 部品 | 固定するもの |
 |---|---|
-| `ConfirmDialog` | 見出し・本文の表示領域・キャンセルと確定の2つのボタン |
+| `ConfirmDialog` | Header と Content の配置・キャンセルと確定の2つのボタン |
 | `CheckboxConfirmDialog` | 上記の構成に、チェックするまで確定できないチェックボックスを加える |
 
-専用の部品は独立した Props を持ち、BaseDialog の Props を継承・転送しません。指定できるのは `open`、見出し・各ラベル、本文の `children`、`onConfirm`、`onCancel` です。本文には文字列だけでなく、表・リスト・独自コンポーネントなど任意の `ReactNode` を渡せます。`render`・`className` による構成の変更や、閉じ方・チェック状態の外部指定は受け付けません。
+専用の部品は独立した Props を持ち、BaseDialog の Props を継承・転送しません。親に指定できるのは `open`、各ラベル、`children`、`onConfirm`、`onCancel` です。`children` には専用の Header と Content をこの順で1つずつ直接渡します。Header と Content は中身を `ReactNode` で受け取り、見出しには inline code、本文には表・リスト・独自コンポーネントなどを置けます。ボタン構成・閉じ方・チェック状態は親側で管理します。
+
+`title`・`description` プロップスは使いません。Header の欠落・重複・順序違い、別種類のダイアログの Header / Content の混在は、型と実行時の確認で防ぎます。JSX の型では子要素の種類を完全には区別できないため、実行時にも専用の2要素かを確認します。
 
 どちらも背景のクリックでは閉じず、右上の閉じるボタンは表示しません。Esc キーはキャンセルとして扱い、開いたときは本文を先頭から読めるよう見出しにフォーカスします。チェック状態は内部で管理し、開くたびに未チェックから始めます。
 
 開閉は親が `open` で管理し、`onConfirm` と `onCancel` で閉じます。
 
 ```tsx
+import { ConfirmDialog, ConfirmDialogHeader, ConfirmDialogContent } from '@/components/confirm-dialog'
+import {
+  CheckboxConfirmDialog,
+  CheckboxConfirmDialogHeader,
+  CheckboxConfirmDialogContent,
+} from '@/components/checkbox-confirm-dialog'
+
 <ConfirmDialog
   open={confirmOpen}
-  title="設定を適用しますか？"
   onCancel={() => setConfirmOpen(false)}
   onConfirm={() => {
     applySettings()
     setConfirmOpen(false)
   }}
 >
-  <p>現在の設定を適用します。</p>
+  <ConfirmDialogHeader>設定を適用しますか？</ConfirmDialogHeader>
+  <ConfirmDialogContent>
+    <p>現在の設定を適用します。</p>
+  </ConfirmDialogContent>
 </ConfirmDialog>
 
 <CheckboxConfirmDialog
   open={checkboxConfirmOpen}
-  title="内容を確認してください"
   checkboxLabel="内容を確認しました"
   onCancel={() => setCheckboxConfirmOpen(false)}
   onConfirm={() => {
@@ -78,7 +88,12 @@ bunx --bun shadcn@latest add <name>
     setCheckboxConfirmOpen(false)
   }}
 >
-  <Table />
+  <CheckboxConfirmDialogHeader>
+    ID: <code>hogehoge</code> を変更しますか？
+  </CheckboxConfirmDialogHeader>
+  <CheckboxConfirmDialogContent>
+    <Table />
+  </CheckboxConfirmDialogContent>
 </CheckboxConfirmDialog>
 ```
 
