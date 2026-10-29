@@ -46,38 +46,40 @@ bunx --bun shadcn@latest add <name>
 
 | 部品 | 固定するもの |
 |---|---|
-| `ConfirmDialog` | 見出し・説明・キャンセルと確定の2つのボタン |
+| `ConfirmDialog` | 見出し・本文の表示領域・キャンセルと確定の2つのボタン |
 | `CheckboxConfirmDialog` | 上記の構成に、チェックするまで確定できないチェックボックスを加える |
 
-専用の部品は独立した Props を持ち、BaseDialog の Props を継承・転送しません。指定できるのは `open`、見出し・説明・各ラベル、`onConfirm`、`onCancel` です。`children`・`render`・`className` による構成の変更や、閉じ方・チェック状態の外部指定は受け付けません。
+専用の部品は独立した Props を持ち、BaseDialog の Props を継承・転送しません。指定できるのは `open`、見出し・各ラベル、本文の `children`、`onConfirm`、`onCancel` です。本文には文字列だけでなく、表・リスト・独自コンポーネントなど任意の `ReactNode` を渡せます。`render`・`className` による構成の変更や、閉じ方・チェック状態の外部指定は受け付けません。
 
-どちらも背景のクリックでは閉じず、右上の閉じるボタンは表示しません。Esc キーはキャンセルとして扱い、開いたときはキャンセルボタンにフォーカスします。チェック状態は内部で管理し、開くたびに未チェックから始めます。
+どちらも背景のクリックでは閉じず、右上の閉じるボタンは表示しません。Esc キーはキャンセルとして扱い、開いたときは本文を先頭から読めるよう見出しにフォーカスします。チェック状態は内部で管理し、開くたびに未チェックから始めます。
 
 開閉は親が `open` で管理し、`onConfirm` と `onCancel` で閉じます。
 
 ```tsx
 <ConfirmDialog
-  open={open}
+  open={confirmOpen}
   title="設定を適用しますか？"
-  description="現在の設定を適用します。"
-  onCancel={() => setOpen(false)}
+  onCancel={() => setConfirmOpen(false)}
   onConfirm={() => {
     applySettings()
-    setOpen(false)
+    setConfirmOpen(false)
   }}
-/>
+>
+  <p>現在の設定を適用します。</p>
+</ConfirmDialog>
 
 <CheckboxConfirmDialog
-  open={open}
-  title="次に進む前に"
-  description="注意事項を確認してください。"
-  checkboxLabel="注意事項を確認しました"
-  onCancel={() => setOpen(false)}
+  open={checkboxConfirmOpen}
+  title="内容を確認してください"
+  checkboxLabel="内容を確認しました"
+  onCancel={() => setCheckboxConfirmOpen(false)}
   onConfirm={() => {
     goToNextStep()
-    setOpen(false)
+    setCheckboxConfirmOpen(false)
   }}
-/>
+>
+  <Table />
+</CheckboxConfirmDialog>
 ```
 
 ## 公開

@@ -1,10 +1,9 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 
 import {
   BaseDialog,
   BaseDialogClose,
   BaseDialogContent,
-  BaseDialogDescription,
   BaseDialogFooter,
   BaseDialogHeader,
   BaseDialogTitle,
@@ -15,7 +14,7 @@ import { Checkbox } from '@/elements/checkbox'
 type CheckboxConfirmDialogProps = {
   open: boolean
   title: string
-  description: string
+  children: ReactNode
   checkboxLabel: string
   confirmLabel?: string
   cancelLabel?: string
@@ -26,7 +25,7 @@ type CheckboxConfirmDialogProps = {
 function CheckboxConfirmDialog({
   open,
   title,
-  description,
+  children,
   checkboxLabel,
   confirmLabel = '次へ',
   cancelLabel = 'キャンセル',
@@ -34,7 +33,7 @@ function CheckboxConfirmDialog({
   onCancel,
 }: CheckboxConfirmDialogProps) {
   const [checked, setChecked] = useState(false)
-  const cancelRef = useRef<HTMLButtonElement>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
 
   // 親から閉じた場合も、次に開くときは未チェックから始める。
   if (!open && checked) {
@@ -51,19 +50,23 @@ function CheckboxConfirmDialog({
     >
       <BaseDialogContent
         showCloseButton={false}
-        initialFocus={cancelRef}
+        initialFocus={titleRef}
         className="max-h-[calc(100dvh-2rem)] overflow-y-auto"
       >
         <BaseDialogHeader>
-          <BaseDialogTitle>{title}</BaseDialogTitle>
-          <BaseDialogDescription>{description}</BaseDialogDescription>
+          <BaseDialogTitle ref={titleRef} tabIndex={-1} className="outline-none">
+            {title}
+          </BaseDialogTitle>
         </BaseDialogHeader>
+        <div className="min-w-0 overflow-x-auto text-sm text-muted-foreground">
+          {children}
+        </div>
         <label className="flex cursor-pointer items-start gap-2 text-sm leading-5">
           <Checkbox checked={checked} onCheckedChange={setChecked} className="mt-0.5" />
           {checkboxLabel}
         </label>
         <BaseDialogFooter>
-          <BaseDialogClose render={<Button ref={cancelRef} variant="outline" />}>
+          <BaseDialogClose render={<Button variant="outline" />}>
             {cancelLabel}
           </BaseDialogClose>
           <Button

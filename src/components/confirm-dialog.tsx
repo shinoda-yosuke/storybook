@@ -1,10 +1,9 @@
-import { useRef } from 'react'
+import { useRef, type ReactNode } from 'react'
 
 import {
   BaseDialog,
   BaseDialogClose,
   BaseDialogContent,
-  BaseDialogDescription,
   BaseDialogFooter,
   BaseDialogHeader,
   BaseDialogTitle,
@@ -14,7 +13,7 @@ import { Button } from '@/elements/button'
 type ConfirmDialogProps = {
   open: boolean
   title: string
-  description: string
+  children: ReactNode
   confirmLabel?: string
   cancelLabel?: string
   onConfirm: () => void
@@ -24,13 +23,13 @@ type ConfirmDialogProps = {
 function ConfirmDialog({
   open,
   title,
-  description,
+  children,
   confirmLabel = '確認',
   cancelLabel = 'キャンセル',
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
-  const cancelRef = useRef<HTMLButtonElement>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
 
   return (
     <BaseDialog
@@ -42,15 +41,19 @@ function ConfirmDialog({
     >
       <BaseDialogContent
         showCloseButton={false}
-        initialFocus={cancelRef}
+        initialFocus={titleRef}
         className="max-h-[calc(100dvh-2rem)] overflow-y-auto"
       >
         <BaseDialogHeader>
-          <BaseDialogTitle>{title}</BaseDialogTitle>
-          <BaseDialogDescription>{description}</BaseDialogDescription>
+          <BaseDialogTitle ref={titleRef} tabIndex={-1} className="outline-none">
+            {title}
+          </BaseDialogTitle>
         </BaseDialogHeader>
+        <div className="min-w-0 overflow-x-auto text-sm text-muted-foreground">
+          {children}
+        </div>
         <BaseDialogFooter>
-          <BaseDialogClose render={<Button ref={cancelRef} variant="outline" />}>
+          <BaseDialogClose render={<Button variant="outline" />}>
             {cancelLabel}
           </BaseDialogClose>
           <Button onClick={onConfirm}>{confirmLabel}</Button>
