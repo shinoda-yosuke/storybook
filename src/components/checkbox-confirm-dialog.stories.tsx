@@ -1,6 +1,5 @@
-import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/tanstack-react'
-import { useArgs } from 'storybook/preview-api'
+import { useArgs, useState } from 'storybook/preview-api'
 import { fn } from 'storybook/test'
 
 import {
