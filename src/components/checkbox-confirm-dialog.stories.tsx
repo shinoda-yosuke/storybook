@@ -9,7 +9,7 @@ import {
 import { Button } from '@/elements/button'
 
 const meta = {
-  title: 'Components/CheckboxConfirmDialog',
+  title: 'Components/Dialog/CheckboxConfirmDialog',
   component: CheckboxConfirmDialog,
   tags: ['autodocs'],
   parameters: {

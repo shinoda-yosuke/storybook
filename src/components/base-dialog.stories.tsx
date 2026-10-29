@@ -14,7 +14,7 @@ import {
 } from '@/components/base-dialog'
 
 const meta = {
-  title: 'Components/BaseDialog',
+  title: 'Components/Dialog/BaseDialog',
   component: BaseDialogContent,
   tags: ['autodocs'],
   parameters: {
