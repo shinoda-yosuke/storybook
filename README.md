@@ -40,6 +40,46 @@ shadcn の部品は `src/elements` に入ります（`components.json` の `alia
 bunx --bun shadcn@latest add <name>
 ```
 
+## ダイアログ
+
+`BaseDialog` は、各パーツを組み合わせて使うダイアログの土台です。用途が決まっている場合は、BaseDialog を包んで機能を絞った次の部品を使います。
+
+| 部品 | 固定するもの |
+|---|---|
+| `ConfirmDialog` | 見出し・説明・キャンセルと確定の2つのボタン |
+| `CheckboxConfirmDialog` | 上記の構成に、チェックするまで確定できないチェックボックスを加える |
+
+専用の部品は独立した Props を持ち、BaseDialog の Props を継承・転送しません。指定できるのは `open`、見出し・説明・各ラベル、`onConfirm`、`onCancel` です。`children`・`render`・`className` による構成の変更や、閉じ方・チェック状態の外部指定は受け付けません。
+
+どちらも背景のクリックでは閉じず、右上の閉じるボタンは表示しません。Esc キーはキャンセルとして扱い、開いたときはキャンセルボタンにフォーカスします。チェック状態は内部で管理し、開くたびに未チェックから始めます。
+
+開閉は親が `open` で管理し、`onConfirm` と `onCancel` で閉じます。
+
+```tsx
+<ConfirmDialog
+  open={open}
+  title="設定を適用しますか？"
+  description="現在の設定を適用します。"
+  onCancel={() => setOpen(false)}
+  onConfirm={() => {
+    applySettings()
+    setOpen(false)
+  }}
+/>
+
+<CheckboxConfirmDialog
+  open={open}
+  title="次に進む前に"
+  description="注意事項を確認してください。"
+  checkboxLabel="注意事項を確認しました"
+  onCancel={() => setOpen(false)}
+  onConfirm={() => {
+    goToNextStep()
+    setOpen(false)
+  }}
+/>
+```
+
 ## 公開
 
 Storybook のビルド結果を、Cloudflare Workers の静的アセットとして配信します（設定は `wrangler.jsonc`）。

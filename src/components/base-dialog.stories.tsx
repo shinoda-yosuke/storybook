@@ -3,26 +3,26 @@ import type { Meta, StoryObj } from '@storybook/tanstack-react'
 
 import { Button } from '@/elements/button'
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/dialog'
+  BaseDialog,
+  BaseDialogClose,
+  BaseDialogContent,
+  BaseDialogDescription,
+  BaseDialogFooter,
+  BaseDialogHeader,
+  BaseDialogTitle,
+  BaseDialogTrigger,
+} from '@/components/base-dialog'
 
 const meta = {
-  title: 'Components/Dialog',
-  component: DialogContent,
+  title: 'Components/BaseDialog',
+  component: BaseDialogContent,
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
     docs: {
       description: {
         component:
-          '画面に重ねて表示するダイアログ。shadcn/ui（Base UI・nova）の Dialog と Elements の Button を組み合わせる。`DialogTitle` と `DialogDescription` で見出しと説明を付け、`DialogTrigger` と `DialogClose` の `render` に Button を渡して使う。Esc キーや背景のクリックでも閉じられる。',
+          '画面に重ねて表示するダイアログの土台。shadcn/ui（Base UI・nova）の Dialog と Elements の Button を組み合わせる。`BaseDialogTitle` と `BaseDialogDescription` で見出しと説明を付け、`BaseDialogTrigger` と `BaseDialogClose` の `render` に Button を渡して使う。用途が決まっている場合は、公開する機能を絞った ConfirmDialog や CheckboxConfirmDialog を使う。',
       },
     },
   },
@@ -35,7 +35,7 @@ const meta = {
       description: '右上の閉じるボタンを表示する',
     },
   },
-} satisfies Meta<typeof DialogContent>
+} satisfies Meta<typeof BaseDialogContent>
 
 export default meta
 
@@ -43,18 +43,18 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   render: (args) => (
-    <Dialog>
-      <DialogTrigger render={<Button variant="outline" />}>ダイアログを開く</DialogTrigger>
-      <DialogContent {...args}>
-        <DialogHeader>
-          <DialogTitle>設定を変更しました</DialogTitle>
-          <DialogDescription>
+    <BaseDialog>
+      <BaseDialogTrigger render={<Button variant="outline" />}>ダイアログを開く</BaseDialogTrigger>
+      <BaseDialogContent {...args}>
+        <BaseDialogHeader>
+          <BaseDialogTitle>設定を変更しました</BaseDialogTitle>
+          <BaseDialogDescription>
             変更した内容は、次回のログインから適用されます。
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter showCloseButton />
-      </DialogContent>
-    </Dialog>
+          </BaseDialogDescription>
+        </BaseDialogHeader>
+        <BaseDialogFooter showCloseButton />
+      </BaseDialogContent>
+    </BaseDialog>
   ),
 }
 
@@ -64,25 +64,25 @@ export const CustomCloseButton: Story = {
     docs: {
       description: {
         story:
-          '`DialogClose` の `render` に Button を渡すと、閉じるボタンの文言や見た目を変更できる。',
+          '`BaseDialogClose` の `render` に Button を渡すと、閉じるボタンの文言や見た目を変更できる。',
       },
     },
   },
   render: (args) => (
-    <Dialog>
-      <DialogTrigger render={<Button variant="outline" />}>内容を確認する</DialogTrigger>
-      <DialogContent {...args}>
-        <DialogHeader>
-          <DialogTitle>内容を確認してください</DialogTitle>
-          <DialogDescription>
+    <BaseDialog>
+      <BaseDialogTrigger render={<Button variant="outline" />}>内容を確認する</BaseDialogTrigger>
+      <BaseDialogContent {...args}>
+        <BaseDialogHeader>
+          <BaseDialogTitle>内容を確認してください</BaseDialogTitle>
+          <BaseDialogDescription>
             お知らせを確認したら、ボタンを押して元の画面に戻れます。
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <DialogClose render={<Button />}>確認しました</DialogClose>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          </BaseDialogDescription>
+        </BaseDialogHeader>
+        <BaseDialogFooter>
+          <BaseDialogClose render={<Button />}>確認しました</BaseDialogClose>
+        </BaseDialogFooter>
+      </BaseDialogContent>
+    </BaseDialog>
   ),
 }
 
@@ -97,17 +97,17 @@ export const NoCloseButton: Story = {
     },
   },
   render: (args) => (
-    <Dialog>
-      <DialogTrigger render={<Button variant="outline" />}>閉じるボタンなし</DialogTrigger>
-      <DialogContent {...args}>
-        <DialogHeader>
-          <DialogTitle>お知らせ</DialogTitle>
-          <DialogDescription>
+    <BaseDialog>
+      <BaseDialogTrigger render={<Button variant="outline" />}>閉じるボタンなし</BaseDialogTrigger>
+      <BaseDialogContent {...args}>
+        <BaseDialogHeader>
+          <BaseDialogTitle>お知らせ</BaseDialogTitle>
+          <BaseDialogDescription>
             このダイアログは、Esc キーを押すか背景をクリックすると閉じられます。
-          </DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
+          </BaseDialogDescription>
+        </BaseDialogHeader>
+      </BaseDialogContent>
+    </BaseDialog>
   ),
 }
 
@@ -121,16 +121,16 @@ export const ScrollableContent: Story = {
     },
   },
   render: (args) => (
-    <Dialog>
-      <DialogTrigger render={<Button variant="outline" />}>長い内容を開く</DialogTrigger>
-      <DialogContent
+    <BaseDialog>
+      <BaseDialogTrigger render={<Button variant="outline" />}>長い内容を開く</BaseDialogTrigger>
+      <BaseDialogContent
         {...args}
         className="max-h-[min(36rem,calc(100dvh-2rem))] grid-rows-[auto_minmax(0,1fr)_auto]"
       >
-        <DialogHeader>
-          <DialogTitle>ご利用の前に</DialogTitle>
-          <DialogDescription>サービスを利用する際の注意事項をご確認ください。</DialogDescription>
-        </DialogHeader>
+        <BaseDialogHeader>
+          <BaseDialogTitle>ご利用の前に</BaseDialogTitle>
+          <BaseDialogDescription>サービスを利用する際の注意事項をご確認ください。</BaseDialogDescription>
+        </BaseDialogHeader>
         <div className="min-h-0 space-y-4 overflow-y-auto pr-2">
           {Array.from({ length: 12 }, (_, index) => (
             <section key={index} className="space-y-2">
@@ -142,13 +142,13 @@ export const ScrollableContent: Story = {
             </section>
           ))}
         </div>
-        <DialogFooter showCloseButton />
-      </DialogContent>
-    </Dialog>
+        <BaseDialogFooter showCloseButton />
+      </BaseDialogContent>
+    </BaseDialog>
   ),
 }
 
-function ControlledDialog(args: ComponentProps<typeof DialogContent>) {
+function ControlledDialog(args: ComponentProps<typeof BaseDialogContent>) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('山田 太郎')
   const nameId = useId()
@@ -156,9 +156,9 @@ function ControlledDialog(args: ComponentProps<typeof DialogContent>) {
   return (
     <div className="flex flex-col items-center gap-3">
       <p role="status" className="text-sm text-muted-foreground">表示名: {name}</p>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger render={<Button variant="outline" />}>表示名を編集</DialogTrigger>
-        <DialogContent {...args}>
+      <BaseDialog open={open} onOpenChange={setOpen}>
+        <BaseDialogTrigger render={<Button variant="outline" />}>表示名を編集</BaseDialogTrigger>
+        <BaseDialogContent {...args}>
           <form
             className="grid gap-4"
             onSubmit={(event) => {
@@ -168,10 +168,10 @@ function ControlledDialog(args: ComponentProps<typeof DialogContent>) {
               setOpen(false)
             }}
           >
-            <DialogHeader>
-              <DialogTitle>表示名を編集</DialogTitle>
-              <DialogDescription>プロフィールに表示する名前を変更できます。</DialogDescription>
-            </DialogHeader>
+            <BaseDialogHeader>
+              <BaseDialogTitle>表示名を編集</BaseDialogTitle>
+              <BaseDialogDescription>プロフィールに表示する名前を変更できます。</BaseDialogDescription>
+            </BaseDialogHeader>
             <div className="grid gap-2">
               <label htmlFor={nameId} className="font-medium">表示名</label>
               <input
@@ -183,13 +183,13 @@ function ControlledDialog(args: ComponentProps<typeof DialogContent>) {
                 className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
               />
             </div>
-            <DialogFooter>
-              <DialogClose render={<Button variant="outline" />}>キャンセル</DialogClose>
+            <BaseDialogFooter>
+              <BaseDialogClose render={<Button variant="outline" />}>キャンセル</BaseDialogClose>
               <Button type="submit">保存</Button>
-            </DialogFooter>
+            </BaseDialogFooter>
           </form>
-        </DialogContent>
-      </Dialog>
+        </BaseDialogContent>
+      </BaseDialog>
     </div>
   )
 }
