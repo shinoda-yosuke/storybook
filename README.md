@@ -1,8 +1,8 @@
 # storybook
 
-shadcn/ui（Base UI）と TanStack Router で作る部品カタログです。Storybook を GitHub Pages で公開します。
+shadcn/ui（Base UI）と TanStack Router で作る部品カタログです。Storybook を Cloudflare Workers で公開します。
 
-https://shinoda-yosuke.github.io/storybook/
+https://storybook.disneyland.workers.dev （WARP につながった端末からだけ開けます）
 
 ## 分け方
 
@@ -42,4 +42,21 @@ bunx --bun shadcn@latest add <name>
 
 ## 公開
 
-main に push すると、GitHub Actions（`.github/workflows/pages.yml`）が Storybook をビルドして GitHub Pages に公開します。
+Storybook のビルド結果を、Cloudflare Workers の静的アセットとして配信します（設定は `wrangler.jsonc`）。
+
+| いつ | どこに | workflow |
+|---|---|---|
+| main に push したとき | 本番 `https://storybook.disneyland.workers.dev` | `.github/workflows/deploy.yml` |
+| PR を出したとき・更新したとき | プレビュー `https://pr-<番号>-storybook.disneyland.workers.dev`（PR にコメントで URL を貼る） | `.github/workflows/preview.yml` |
+| PR を閉じたとき | そのプレビューを消す | `.github/workflows/preview.yml` |
+
+- 本番もプレビューも、Cloudflare Access で守っています。WARP（Zero Trust の組織 `shirayukihime`）につながった端末からだけ開けます。
+- どちらの workflow も、デプロイのあとに「WARP なしで開くと Access のログインへ回される」ことを確かめます。守りが外れていたら失敗します。
+- workflow には、リポジトリの secret `CLOUDFLARE_API_TOKEN` と変数 `CLOUDFLARE_ACCOUNT_ID` が要ります。
+
+手元から本番にデプロイするとき:
+
+```sh
+bun run build-storybook
+bunx wrangler@4.155.0 deploy
+```
