@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # WARP を通らない場所（GitHub のランナー）から開いても、中身が見えないことを確かめる。
-# Cloudflare Access は、ログインへ回す（302）か、その場で断る（403）
+# Cloudflare Access は、ログインへ回す（302）か、その場で断る（403）。
+# Gateway（WARP）を必須にしているので、WARP の外からは 403 になる
 set -euo pipefail
 
 url="$1"
@@ -16,8 +17,9 @@ case "$status" in
   302)
     [[ "$location" == *".cloudflareaccess.com/"* ]] && exit 0
     ;;
-  401 | 403)
-    exit 0
+  403)
+    # Access 以外（WAF など）の 403 は通さない
+    grep -qi '^cf-access-aud:' "$headers" && exit 0
     ;;
 esac
 
