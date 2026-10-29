@@ -1,0 +1,52 @@
+name: deploy
+
+# main の Storybook を Cloudflare Workers（静的アセット）に公開する
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  WRANGLER_VERSION: 4.155.0
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      # Storybook と wrangler の CLI は Node で動く
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build Storybook
+        run: bun run build-storybook
+
+      - name: Deploy to Cloudflare Workers
+        id: deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler-output.json
+        run: |
+          bunx "wrangler@$WRANGLER_VERSION" deploy
+          url="$(jq -er 'select(.type == "deploy") | .targets[0]' "$WRANGLER_OUTPUT_FILE_PATH")"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Check that the site is behind Cloudflare Access
+        run: ./.github/scripts/assert-behind-access.sh "${{ steps.deploy.outputs.url }}"

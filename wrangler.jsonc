@@ -1,0 +1,15 @@
+// Storybook のビルド結果を Cloudflare Workers の静的アセットとして配信する
+{
+  "name": "storybook",
+  "compatibility_date": "2026-10-29",
+  "assets": {
+    "directory": "./storybook-static"
+  },
+  // 本番は storybook.<サブドメイン>.workers.dev
+  "workers_dev": true,
+  // PR ごとのプレビュー（pr-<番号>-storybook.<サブドメイン>.workers.dev）を出す。
+  // 反映には wrangler deploy が要る
+  "preview_urls": true,
+  // Worker Previews（wrangler preview）に必要。静的アセットや互換性の設定は上の値がそのまま使われる
+  "previews": {}
+}
