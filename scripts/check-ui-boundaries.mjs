@@ -22,6 +22,8 @@ function sourceTarget(importer, specifier) {
 export function violationsForSource(importer, source) {
   const violations = []
   const { imports, exports } = parser.scan(source)
+  const baseReference = importer.startsWith('src/components/') && isBase(importer) &&
+    isStory(importer) && /\btitle\s*:\s*['"]BASE COMPONENTS\//.test(source)
 
   if (!isBase(importer) && exports.some((name) => /^Base[A-Z]/.test(name))) {
     violations.push(`${importer}: BaseX は公開用ファイルから再エクスポートできません。`)
@@ -36,8 +38,8 @@ export function violationsForSource(importer, source) {
     const componentImplementation = layer === 'components' &&
       importer.endsWith('.tsx') && !isStory(importer) && !/\/index\.tsx$/.test(importer)
 
-    if (isBase(target) && !componentImplementation) {
-      violations.push(`${importer}: BaseX は派生コンポーネントの実装からだけ参照できます（${specifier}）。`)
+    if (isBase(target) && !componentImplementation && !baseReference) {
+      violations.push(`${importer}: BaseX は派生実装か BASE COMPONENTS の専用 Story からだけ参照できます（${specifier}）。`)
     }
     if (isStory(importer)) continue
 

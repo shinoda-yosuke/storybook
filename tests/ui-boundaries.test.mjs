@@ -36,4 +36,25 @@ describe('UI の依存ルール', () => {
     expect(violationsForSource('src/components/index.ts', "export { BaseDialog } from './base-dialog'")).not.toBeEmpty()
     expect(violationsForSource('src/components/index.ts', "export * from './base-dialog'")).not.toBeEmpty()
   })
+
+  test('BASE COMPONENTS の専用 Story では Base を参照できる', () => {
+    expect(violationsForSource('src/components/base-dialog.stories.tsx', `
+      import { BaseDialog } from './base-dialog'
+      export default { title: 'BASE COMPONENTS/Dialog/BaseDialog' }
+    `)).toBeEmpty()
+  })
+
+  test('Base の Story でも通常の Components に掲載する場合は直接参照できない', () => {
+    expect(violationsForSource('src/components/base-dialog.stories.tsx', `
+      import { BaseDialog } from './base-dialog'
+      export default { title: 'Components/Dialog/BaseDialog' }
+    `)).not.toBeEmpty()
+  })
+
+  test('BASE COMPONENTS の名前だけでは通常の Story に Base の参照を許可しない', () => {
+    expect(violationsForSource('src/components/example.stories.tsx', `
+      import { BaseDialog } from './base-dialog'
+      export default { title: 'BASE COMPONENTS/Dialog/Example' }
+    `)).not.toBeEmpty()
+  })
 })

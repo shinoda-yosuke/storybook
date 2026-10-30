@@ -15,9 +15,9 @@ https://storybook.disneyland.workers.dev （WARP につながった端末から�
 | Layouts / Global | `src/layouts/global` | 画面全体の配置だけを決める枠 |
 | Layouts / Local | `src/layouts/local` | 主にコンテンツ内の配置だけを決める枠 |
 
-Elements・公開 Components に `variant="outline"` などの見た目を選ぶ Props や、`className`・`style`・`render` による見た目の差し替えは設けません。色・角丸・影・文字装飾は内部で決めます。幅・間隔・整列・分割比率は配置の責務とし、`size` や Button の `width="content" | "fill"` は配置用として許可します。
+Elements・画面から使う派生 Components に `variant="outline"` などの見た目を選ぶ Props や、`className`・`style`・`render` による見た目の差し替えは設けません。色・角丸・影・文字装飾は内部で決めます。幅・間隔・整列・分割比率は配置の責務とし、`size` や Button の `width="content" | "fill"` は配置用として許可します。
 
-BaseX は派生実装からだけ使います。画面や Storybook の使用例は用途別の派生を使い、「大きいダイアログ」など見た目による派生は作りません。Layouts は任意の `ReactNode` を受け取り、特定の部品や操作に依存しません。
+BaseX は派生実装から使います。画面や通常の Storybook の使用例は用途別の派生を使い、「大きいダイアログ」など見た目による派生は作りません。Storybook の `BASE COMPONENTS` は、`src/components` にある土台を派生実装者が確認するためのリファレンス区分です。ここでは BaseX を直接組み立てて、構造・機能・コードを確認できます。Layouts は任意の `ReactNode` を受け取り、特定の部品や操作に依存しません。
 
 ## 使っているもの
 
@@ -69,7 +69,7 @@ HTML の `type` は `purpose` と独立した動作の指定です。既定は `
 
 ## ダイアログ
 
-`BaseDialog` は派生実装専用の土台です。画面や使用例で直接使わず、操作を固定した次の派生部品を使います。Storybook も派生部品だけを `Components/Dialog` に掲載します。
+`BaseDialog` は派生実装専用の土台です。Storybook の `BASE COMPONENTS/Dialog/BaseDialog` に、派生を作る人向けの構成・開閉・スクロール・フォームのリファレンスを掲載します。利用画面では操作を固定した次の派生部品を使い、Storybook の `Components/Dialog` で使用例を確認します。
 
 | 部品 | 固定するもの |
 |---|---|
@@ -156,7 +156,7 @@ import { OneTwoSplitLayout } from '@/layouts/local/one-two-split-layout'
 
 - Button の `variant` を削除し、全使用箇所をユーザーの意思を表す `purpose` に移行しました。HTML の `type` は独立して指定し、既定は `button` です。
 - Button・Checkbox の `className`・`style`・`render` を削除しました。配置調整は外側のラッパーで行います。
-- BaseDialog の単独 Story を削除しました。既存の ConfirmDialog・CheckboxConfirmDialog の Header / Content 構成を使ってください。
+- BaseDialog のリファレンスを `BASE COMPONENTS/Dialog/BaseDialog` に配置しました。利用画面では ConfirmDialog・CheckboxConfirmDialog の Header / Content 構成を使ってください。
 
 ## 公開
 
