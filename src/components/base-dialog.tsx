@@ -58,19 +58,15 @@ function BaseDialogContent({
       >
         {children}
         {showCloseButton && (
-          <DialogPrimitive.Close
-            data-slot="dialog-close"
-            render={
-              <Button
-                variant="ghost"
-                className="absolute top-2 right-2"
-                size="icon-sm"
-              />
-            }
-          >
-            <XIcon />
-            <span className="sr-only">閉じる</span>
-          </DialogPrimitive.Close>
+          <div className="absolute top-2 right-2">
+            <DialogPrimitive.Close
+              data-slot="dialog-close"
+              render={<Button purpose="cancel" size="icon-sm" />}
+            >
+              <XIcon />
+              <span className="sr-only">閉じる</span>
+            </DialogPrimitive.Close>
+          </div>
         )}
       </DialogPrimitive.Popup>
     </BaseDialogPortal>
@@ -106,7 +102,7 @@ function BaseDialogFooter({
     >
       {children}
       {showCloseButton && (
-        <DialogPrimitive.Close render={<Button variant="outline" />}>
+        <DialogPrimitive.Close render={<Button purpose="cancel" />}>
           閉じる
         </DialogPrimitive.Close>
       )}

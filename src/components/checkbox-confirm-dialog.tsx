@@ -70,14 +70,17 @@ function CheckboxConfirmDialog({
       >
         {children}
         <label className="flex cursor-pointer items-start gap-2 text-sm leading-5">
-          <Checkbox checked={checked} onCheckedChange={setChecked} className="mt-0.5" />
+          <span className="mt-0.5 shrink-0">
+            <Checkbox checked={checked} onCheckedChange={setChecked} />
+          </span>
           {checkboxLabel}
         </label>
         <BaseDialogFooter>
-          <BaseDialogClose render={<Button variant="outline" />}>
+          <BaseDialogClose render={<Button purpose="cancel" />}>
             {cancelLabel}
           </BaseDialogClose>
           <Button
+            purpose="execute"
             disabled={!checked}
             onClick={() => {
               if (checked) onConfirm()

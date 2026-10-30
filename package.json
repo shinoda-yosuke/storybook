@@ -9,6 +9,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b",
+    "check:architecture": "bun run scripts/check-ui-boundaries.mjs",
+    "test": "bun test tests",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

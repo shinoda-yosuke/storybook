@@ -45,7 +45,7 @@ const meta = {
 
     return (
       <div className="flex flex-col items-center gap-3">
-        <Button variant="outline" onClick={() => setOpen(true)}>
+        <Button purpose="execute" onClick={() => setOpen(true)}>
           確認ダイアログを開く
         </Button>
         <p role="status" className="text-sm text-muted-foreground">結果: {result}</p>

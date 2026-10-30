@@ -56,10 +56,10 @@ function ConfirmDialog({
       >
         {children}
         <BaseDialogFooter>
-          <BaseDialogClose render={<Button variant="outline" />}>
+          <BaseDialogClose render={<Button purpose="cancel" />}>
             {cancelLabel}
           </BaseDialogClose>
-          <Button onClick={onConfirm}>{confirmLabel}</Button>
+          <Button purpose="execute" onClick={onConfirm}>{confirmLabel}</Button>
         </BaseDialogFooter>
       </BaseDialogContent>
     </BaseDialog>

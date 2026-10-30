@@ -1,29 +1,13 @@
-import type { ComponentProps } from 'react'
+import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/tanstack-react'
-import { Link } from '@tanstack/react-router'
 import { ArrowRight, Plus, Trash2 } from 'lucide-react'
+import { fn } from 'storybook/test'
 
-import { Button, buttonVariants } from '@/elements/button'
+import { Button, type ButtonProps, type ButtonPurpose } from '@/elements/button'
 
-type ButtonProps = ComponentProps<typeof Button>
-
-const VARIANTS = [
-  'default',
-  'outline',
-  'secondary',
-  'ghost',
-  'destructive',
-  'link',
-] as const satisfies readonly NonNullable<ButtonProps['variant']>[]
-
-const TEXT_SIZES = ['xs', 'sm', 'default', 'lg'] as const satisfies readonly NonNullable<
-  ButtonProps['size']
->[]
-
-const ICON_SIZES = ['icon-xs', 'icon-sm', 'icon', 'icon-lg'] as const satisfies readonly NonNullable<
-  ButtonProps['size']
->[]
-
+const PURPOSES = ['submit', 'cancel', 'execute', 'delete'] as const satisfies readonly ButtonPurpose[]
+const TEXT_SIZES = ['xs', 'sm', 'default', 'lg'] as const satisfies readonly ButtonProps['size'][]
+const ICON_SIZES = ['icon-xs', 'icon-sm', 'icon', 'icon-lg'] as const satisfies readonly ButtonProps['size'][]
 const SIZES = [...TEXT_SIZES, ...ICON_SIZES]
 
 const meta = {
@@ -34,26 +18,27 @@ const meta = {
     docs: {
       description: {
         component:
-          'いちばん小さい部品のボタン。shadcn/ui（Base UI・nova）のボタンをそのまま使う。リンクにはボタンを使わず、`buttonVariants` でリンクに見た目だけを当てる。',
+          '複数のコンポーネントで使える操作用のボタン。必須の purpose で送信・キャンセル・実行・削除を指定する。見た目は内部で決まり、variant・className・style・render は公開しない。size は配置の制約に合わせて選べる。submit だけがフォームを送信し、他の操作は HTML の type="button" になる。画面の移動にはリンクを使う。',
       },
     },
   },
   args: {
-    children: 'ボタン',
-    variant: 'default',
+    children: '実行する',
+    purpose: 'execute',
     size: 'default',
+    onClick: fn(),
   },
   argTypes: {
-    variant: {
+    purpose: {
       control: 'select',
-      options: VARIANTS,
-      description: '見た目の種類',
-      table: { type: { summary: VARIANTS.join(' | ') } },
+      options: PURPOSES,
+      description: '操作の目的。submit はフォーム送信、cancel は取り消し、execute は実行、delete は削除',
+      table: { type: { summary: PURPOSES.join(' | ') } },
     },
     size: {
       control: 'select',
       options: SIZES,
-      description: '大きさ。icon で始まるものは、アイコンだけのボタンに使う',
+      description: '配置に必要な寸法。icon で始まるものはアイコンだけのボタン用',
       table: { type: { summary: SIZES.join(' | ') } },
     },
   },
@@ -63,27 +48,16 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
-
-export const Variants: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-2">
-      {VARIANTS.map((variant) => (
-        <Button key={variant} {...args} variant={variant}>
-          {variant}
-        </Button>
-      ))}
-    </div>
-  ),
-}
+export const Execute: Story = {}
+export const Submit: Story = { args: { purpose: 'submit', children: '送信する' } }
+export const Cancel: Story = { args: { purpose: 'cancel', children: 'キャンセル' } }
+export const Delete: Story = { args: { purpose: 'delete', children: '削除する' } }
 
 export const Sizes: Story = {
   render: (args) => (
     <div className="flex flex-wrap items-center gap-2">
       {TEXT_SIZES.map((size) => (
-        <Button key={size} {...args} size={size}>
-          {size}
-        </Button>
+        <Button key={size} {...args} size={size}>{size}</Button>
       ))}
     </div>
   ),
@@ -94,10 +68,10 @@ export const WithIcon: Story = {
     <div className="flex flex-wrap items-center gap-2">
       <Button {...args}>
         <Plus data-icon="inline-start" />
-        追加
+        追加する
       </Button>
-      <Button {...args} variant="outline">
-        次へ
+      <Button {...args}>
+        次へ進む
         <ArrowRight data-icon="inline-end" />
       </Button>
     </div>
@@ -105,10 +79,11 @@ export const WithIcon: Story = {
 }
 
 export const IconOnly: Story = {
+  args: { purpose: 'delete' },
   render: (args) => (
     <div className="flex flex-wrap items-center gap-2">
       {ICON_SIZES.map((size) => (
-        <Button key={size} {...args} size={size} variant="outline" aria-label="削除">
+        <Button key={size} {...args} size={size} aria-label="削除する">
           <Trash2 />
         </Button>
       ))}
@@ -116,22 +91,45 @@ export const IconOnly: Story = {
   ),
 }
 
-export const Disabled: Story = {
-  args: { disabled: true },
-}
+export const Disabled: Story = { args: { disabled: true } }
 
-export const AsLink: Story = {
+export const InForm: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          'リンクはボタンにせず、TanStack Router の `Link` に `buttonVariants` で見た目だけを当てる。Base UI のボタンを `render` でリンクにすると `role="button"` が付き、リンクとして読み上げられなくなるため。',
+        story: '同じフォーム内でも submit だけが送信する。キャンセル・実行・削除を押しても送信回数は増えない。',
       },
     },
   },
-  render: ({ variant, size }) => (
-    <Link to="/" className={buttonVariants({ variant, size })}>
-      トップへ
-    </Link>
-  ),
+  render: function Render(args) {
+    const [submissions, setSubmissions] = useState(0)
+    const [lastAction, setLastAction] = useState('未操作')
+
+    return (
+      <form
+        className="grid gap-3"
+        onSubmit={(event) => {
+          event.preventDefault()
+          setSubmissions((count) => count + 1)
+          setLastAction('送信')
+        }}
+      >
+        <div className="flex flex-wrap gap-2">
+          <Button {...args} purpose="submit">送信する</Button>
+          <Button {...args} purpose="cancel" onClick={() => setLastAction('キャンセル')}>
+            キャンセル
+          </Button>
+          <Button {...args} purpose="execute" onClick={() => setLastAction('実行')}>
+            実行する
+          </Button>
+          <Button {...args} purpose="delete" onClick={() => setLastAction('削除')}>
+            削除する
+          </Button>
+        </div>
+        <p role="status" className="text-sm text-muted-foreground">
+          送信回数: {submissions} / 最後の操作: {lastAction}
+        </p>
+      </form>
+    )
+  },
 }

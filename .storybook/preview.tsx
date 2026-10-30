@@ -13,7 +13,7 @@ const preview: Preview = {
     },
     options: {
       storySort: {
-        // 小さい部品から順に並べる
+        // 汎用部品、操作体験、配置の順に並べる
         order: ['Elements', 'Components', 'Layouts'],
       },
     },
