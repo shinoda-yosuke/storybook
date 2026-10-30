@@ -14,7 +14,7 @@ import {
 } from '@/components/base-dialog'
 
 const meta = {
-  title: 'BASE COMPONENTS/Dialog/BaseDialog',
+  title: 'Components/Dialog/#BaseDialog',
   component: BaseDialogContent,
   tags: ['autodocs'],
   parameters: {
@@ -22,7 +22,7 @@ const meta = {
     docs: {
       description: {
         component:
-          '派生コンポーネントを作る人向けのリファレンス。BaseDialog のパーツ構成・開閉・スクロール・フォームの組み立て方を確認する。利用画面では、操作契約を固定した ConfirmDialog や CheckboxConfirmDialog を使う。ここでは派生実装用の Base の API を直接扱う。',
+          '先頭の # は派生実装用の土台の目印。コード名と JSX タグは BaseDialog。派生コンポーネントを作る人向けに、パーツ構成・開閉・スクロール・フォームの組み立て方を掲載する。利用画面では、操作契約を固定した ConfirmDialog や CheckboxConfirmDialog を使う。',
       },
     },
   },

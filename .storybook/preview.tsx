@@ -13,8 +13,8 @@ const preview: Preview = {
     },
     options: {
       storySort: {
-        // 汎用部品、操作体験、配置、派生実装用のリファレンスの順に並べる
-        order: ['Elements', 'Components', 'Layouts', 'BASE COMPONENTS'],
+        // 汎用部品、複合部品、配置の順に並べる。土台も Components にまとめる
+        order: ['Elements', 'Components', 'Layouts'],
       },
     },
   },

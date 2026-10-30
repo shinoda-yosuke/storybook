@@ -22,7 +22,7 @@
 - `src/components` に置く。部品の系列ごとに `BaseX` を定義し、利用者には目的別の派生コンポーネントを提供する。
 - この規約は複合部品を置く Components に限定する。単純な汎用部品は Elements に置く。
 - `BaseX` は派生実装のためだけに使う。画面、Layouts、通常の Components の使用例から直接使わず、公開用の barrel から再エクスポートしない。
-- Storybook では、派生実装者向けのリファレンスとして `BASE COMPONENTS/<系列>/<BaseX>` に掲載する。この参照用 Story では BaseX を直接使って構造と機能を確認できる。ファイルは `src/components` 内の `base-*.stories.tsx` とし、meta の `title` を `BASE COMPONENTS/` で始める。
+- Storybook は `Components` にまとめ、土台は `Components/<系列>/#BaseX` として派生と同じ系列内に掲載する。先頭の `#` は派生実装用の土台を示す表示上の目印で、TypeScript の識別子や JSX タグには付けない。この参照用 Story では BaseX を直接使って構造と機能を確認できる。ファイルは `src/components` 内の `base-*.stories.tsx` とする。
 - 派生は BaseX を包んで機能を制限する。独立した Props を定義し、BaseX の Props を継承したり、任意の Props をそのまま転送したりしない。BaseX に用途の切り替え用 `type` を追加しない。
 - 派生の名前と API は体験・操作で定義する。
   - OK: キャンセルか実行を選ぶ確認ダイアログ、確認事項へのチェックが必要なダイアログ。
@@ -35,7 +35,7 @@
   - 失敗時は `error` を alert として伝え、開いたまま再試行できる。失敗でチェックをリセットせず、閉じてから開いたときに未チェックへ戻す。
   - 開いたときは見出しにフォーカスし、閉じたときは開いた要素へ戻す。開いた要素が消える場合の次のフォーカス先は呼び出し側が決める。
 - 派生の確定ボタンは同意、キャンセルボタンは拒否として定義する。危険な処理への同意など別の体験が必要なら専用の派生を作り、汎用の見た目切り替えを公開しない。
-- Storybook は派生コンポーネントを主軸にする。`Components/<系列>/<派生名>` でまとめ、Show code には実際に使う派生タグを表示する。`BASE COMPONENTS` の Show code には、派生実装に使う BaseX のタグを表示する。
+- Storybook は派生コンポーネントを主軸にする。派生は `Components/<系列>/<派生名>` に掲載し、Show code には実際に使う派生タグを表示する。`#BaseX` の Show code には、派生実装に使う `<BaseX>` のタグを表示する。
 - Layouts には依存しない。
 
 ## Layouts — 配置だけを決める枠
