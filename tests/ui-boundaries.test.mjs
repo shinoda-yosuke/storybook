@@ -33,35 +33,50 @@ describe('UI の依存ルール', () => {
   })
 
   test('Base の再エクスポートを検出する', () => {
-    expect(violationsForSource('src/components/index.ts', "export { BaseDialog } from './base-dialog'")).not.toBeEmpty()
+    expect(violationsForSource('src/components/index.ts', "export { _BaseDialog } from './base-dialog'")).not.toBeEmpty()
     expect(violationsForSource('src/components/index.ts', "export * from './base-dialog'")).not.toBeEmpty()
   })
 
-  test('Components 内の #BaseX 専用 Story では Base を参照できる', () => {
+  test('Components 内の _BaseX 専用 Story では土台を参照できる', () => {
     expect(violationsForSource('src/components/base-dialog.stories.tsx', `
-      import { BaseDialog } from './base-dialog'
-      export default { title: 'Components/Dialog/#BaseDialog' }
+      import { _BaseDialog } from './base-dialog'
+      export default { title: 'Components/Dialog/_BaseDialog' }
     `)).toBeEmpty()
   })
 
-  test('Base の Story でも # の目印がなければ直接参照できない', () => {
+  test('Base の Story でも _BaseX の表示名でなければ直接参照できない', () => {
     expect(violationsForSource('src/components/base-dialog.stories.tsx', `
-      import { BaseDialog } from './base-dialog'
+      import { _BaseDialog } from './base-dialog'
       export default { title: 'Components/Dialog/BaseDialog' }
     `)).not.toBeEmpty()
   })
 
-  test('#BaseX の表示名だけでは通常の Story に Base の参照を許可しない', () => {
+  test('_BaseX の表示名だけでは通常の Story に土台の参照を許可しない', () => {
     expect(violationsForSource('src/components/example.stories.tsx', `
-      import { BaseDialog } from './base-dialog'
-      export default { title: 'Components/Dialog/#BaseExample' }
+      import { _BaseDialog } from './base-dialog'
+      export default { title: 'Components/Dialog/_BaseExample' }
     `)).not.toBeEmpty()
   })
 
   test('旧 BASE COMPONENTS 区分は参照用 Story として扱わない', () => {
     expect(violationsForSource('src/components/base-dialog.stories.tsx', `
-      import { BaseDialog } from './base-dialog'
-      export default { title: 'BASE COMPONENTS/Dialog/BaseDialog' }
+      import { _BaseDialog } from './base-dialog'
+      export default { title: 'BASE COMPONENTS/Dialog/_BaseDialog' }
     `)).not.toBeEmpty()
+  })
+
+  test('旧 #BaseX の表示名は参照用 Story として扱わない', () => {
+    expect(violationsForSource('src/components/base-dialog.stories.tsx', `
+      import { _BaseDialog } from './base-dialog'
+      export default { title: 'Components/Dialog/#BaseDialog' }
+    `)).not.toBeEmpty()
+  })
+
+  test('土台の export 名に _ がなければ検出する', () => {
+    expect(violationsForSource('src/components/base-dialog.tsx', 'export function BaseDialog() { return null }')).not.toBeEmpty()
+  })
+
+  test('_BaseX の名前であっても公開用ファイルから export できない', () => {
+    expect(violationsForSource('src/components/index.ts', 'export const _BaseDialog = () => null')).not.toBeEmpty()
   })
 })

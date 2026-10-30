@@ -23,10 +23,13 @@ export function violationsForSource(importer, source) {
   const violations = []
   const { imports, exports } = parser.scan(source)
   const baseReference = importer.startsWith('src/components/') && isBase(importer) &&
-    isStory(importer) && /\btitle\s*:\s*['"]Components\/(?:[^/'"]+\/)+#Base[^/'"]+['"]/.test(source)
+    isStory(importer) && /\btitle\s*:\s*['"]Components\/(?:[^/'"]+\/)+_Base[^/'"]+['"]/.test(source)
 
-  if (!isBase(importer) && exports.some((name) => /^Base[A-Z]/.test(name))) {
-    violations.push(`${importer}: BaseX は公開用ファイルから再エクスポートできません。`)
+  if (!isBase(importer) && exports.some((name) => /^_?Base[A-Z]/.test(name))) {
+    violations.push(`${importer}: _BaseX は公開用ファイルから再エクスポートできません。`)
+  }
+  if (isBase(importer) && !isStory(importer) && exports.some((name) => /^Base[A-Z]/.test(name))) {
+    violations.push(`${importer}: 土台の識別子と export 名は _BaseX のように _ 始まりにしてください。`)
   }
 
   for (const { path: specifier } of imports) {
@@ -39,7 +42,7 @@ export function violationsForSource(importer, source) {
       importer.endsWith('.tsx') && !isStory(importer) && !/\/index\.tsx$/.test(importer)
 
     if (isBase(target) && !componentImplementation && !baseReference) {
-      violations.push(`${importer}: BaseX は派生実装か Components 内の #BaseX 専用 Story からだけ参照できます（${specifier}）。`)
+      violations.push(`${importer}: _BaseX は派生実装か Components 内の _BaseX 専用 Story からだけ参照できます（${specifier}）。`)
     }
     if (isStory(importer)) continue
 
@@ -69,6 +72,6 @@ if (import.meta.main) {
     console.error(violations.join('\n'))
     process.exitCode = 1
   } else {
-    console.log('UI の依存方向と BaseX の参照先を確認しました。')
+    console.log('UI の依存方向と _BaseX の命名・参照先を確認しました。')
   }
 }

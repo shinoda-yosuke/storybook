@@ -5,23 +5,23 @@ import { cn } from "cn"
 import { Button } from "@/elements/button"
 import { XIcon } from "lucide-react"
 
-function BaseDialog({ ...props }: DialogPrimitive.Root.Props) {
+function _BaseDialog({ ...props }: DialogPrimitive.Root.Props) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />
 }
 
-function BaseDialogTrigger({ ...props }: DialogPrimitive.Trigger.Props) {
+function _BaseDialogTrigger({ ...props }: DialogPrimitive.Trigger.Props) {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
 }
 
-function BaseDialogPortal({ ...props }: DialogPrimitive.Portal.Props) {
+function _BaseDialogPortal({ ...props }: DialogPrimitive.Portal.Props) {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
 }
 
-function BaseDialogClose({ ...props }: DialogPrimitive.Close.Props) {
+function _BaseDialogClose({ ...props }: DialogPrimitive.Close.Props) {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />
 }
 
-function BaseDialogOverlay({
+function _BaseDialogOverlay({
   className,
   ...props
 }: DialogPrimitive.Backdrop.Props) {
@@ -37,7 +37,7 @@ function BaseDialogOverlay({
   )
 }
 
-function BaseDialogContent({
+function _BaseDialogContent({
   className,
   children,
   showCloseButton = true,
@@ -46,8 +46,8 @@ function BaseDialogContent({
   showCloseButton?: boolean
 }) {
   return (
-    <BaseDialogPortal>
-      <BaseDialogOverlay />
+    <_BaseDialogPortal>
+      <_BaseDialogOverlay />
       <DialogPrimitive.Popup
         data-slot="dialog-content"
         className={cn(
@@ -69,11 +69,11 @@ function BaseDialogContent({
           </div>
         )}
       </DialogPrimitive.Popup>
-    </BaseDialogPortal>
+    </_BaseDialogPortal>
   )
 }
 
-function BaseDialogHeader({ className, ...props }: React.ComponentProps<"div">) {
+function _BaseDialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="dialog-header"
@@ -83,7 +83,7 @@ function BaseDialogHeader({ className, ...props }: React.ComponentProps<"div">) 
   )
 }
 
-function BaseDialogFooter({
+function _BaseDialogFooter({
   className,
   showCloseButton = false,
   children,
@@ -110,7 +110,7 @@ function BaseDialogFooter({
   )
 }
 
-function BaseDialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
+function _BaseDialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
@@ -123,7 +123,7 @@ function BaseDialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   )
 }
 
-function BaseDialogDescription({
+function _BaseDialogDescription({
   className,
   ...props
 }: DialogPrimitive.Description.Props) {
@@ -139,15 +139,26 @@ function BaseDialogDescription({
   )
 }
 
+_BaseDialog.displayName = "_BaseDialog"
+_BaseDialogTrigger.displayName = "_BaseDialogTrigger"
+_BaseDialogPortal.displayName = "_BaseDialogPortal"
+_BaseDialogClose.displayName = "_BaseDialogClose"
+_BaseDialogOverlay.displayName = "_BaseDialogOverlay"
+_BaseDialogContent.displayName = "_BaseDialogContent"
+_BaseDialogHeader.displayName = "_BaseDialogHeader"
+_BaseDialogFooter.displayName = "_BaseDialogFooter"
+_BaseDialogTitle.displayName = "_BaseDialogTitle"
+_BaseDialogDescription.displayName = "_BaseDialogDescription"
+
 export {
-  BaseDialog,
-  BaseDialogClose,
-  BaseDialogContent,
-  BaseDialogDescription,
-  BaseDialogFooter,
-  BaseDialogHeader,
-  BaseDialogOverlay,
-  BaseDialogPortal,
-  BaseDialogTitle,
-  BaseDialogTrigger,
+  _BaseDialog,
+  _BaseDialogClose,
+  _BaseDialogContent,
+  _BaseDialogDescription,
+  _BaseDialogFooter,
+  _BaseDialogHeader,
+  _BaseDialogOverlay,
+  _BaseDialogPortal,
+  _BaseDialogTitle,
+  _BaseDialogTrigger,
 }

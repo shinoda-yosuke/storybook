@@ -16,7 +16,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'BaseDialog を包み、キャンセルと確定の2つの操作に絞ったダイアログ。子要素に ConfirmDialogHeader と ConfirmDialogContent をこの順で1つずつ渡す。見出しには inline code などの JSX、本文には表やリストなどを入れられる。ボタン構成と閉じ方は派生コンポーネント側で固定する。背景のクリックでは閉じず、Esc キーはキャンセルとして扱う。最初のフォーカスは見出しに置く。開閉は親が `open` で管理し、各コールバックで閉じる。',
+          '`_BaseDialog` を包み、キャンセルと確定の2つの操作に絞ったダイアログ。子要素に ConfirmDialogHeader と ConfirmDialogContent をこの順で1つずつ渡す。見出しには inline code などの JSX、本文には表やリストなどを入れられる。ボタン構成と閉じ方は派生コンポーネント側で固定する。背景のクリックでは閉じず、Esc キーはキャンセルとして扱う。最初のフォーカスは見出しに置く。開閉は親が `open` で管理し、各コールバックで閉じる。',
       },
     },
   },

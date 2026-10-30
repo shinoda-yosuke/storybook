@@ -1,12 +1,12 @@
 import { useRef, useState, type ReactElement, type ReactNode } from 'react'
 
 import {
-  BaseDialog,
-  BaseDialogClose,
-  BaseDialogContent,
-  BaseDialogFooter,
-  BaseDialogHeader,
-  BaseDialogTitle,
+  _BaseDialog,
+  _BaseDialogClose,
+  _BaseDialogContent,
+  _BaseDialogFooter,
+  _BaseDialogHeader,
+  _BaseDialogTitle,
 } from '@/components/base-dialog'
 import {
   assertConfirmationDialogParts,
@@ -57,7 +57,7 @@ function CheckboxConfirmDialog({
   }
 
   return (
-    <BaseDialog
+    <_BaseDialog
       open={open}
       disablePointerDismissal
       onOpenChange={(nextOpen, eventDetails) => {
@@ -67,7 +67,7 @@ function CheckboxConfirmDialog({
         }
       }}
     >
-      <BaseDialogContent
+      <_BaseDialogContent
         ref={contentRef}
         showCloseButton={false}
         initialFocus={() =>
@@ -89,10 +89,10 @@ function CheckboxConfirmDialog({
           </span>
           {checkboxLabel}
         </label>
-        <BaseDialogFooter>
-          <BaseDialogClose disabled={pending} render={<Button purpose="decline" />}>
+        <_BaseDialogFooter>
+          <_BaseDialogClose disabled={pending} render={<Button purpose="decline" />}>
             {cancelLabel}
-          </BaseDialogClose>
+          </_BaseDialogClose>
           <Button
             purpose="agree"
             disabled={!checked || pending}
@@ -103,19 +103,19 @@ function CheckboxConfirmDialog({
           >
             {pending ? '処理中…' : confirmLabel}
           </Button>
-        </BaseDialogFooter>
-      </BaseDialogContent>
-    </BaseDialog>
+        </_BaseDialogFooter>
+      </_BaseDialogContent>
+    </_BaseDialog>
   )
 }
 
 function CheckboxConfirmDialogHeader({ children }: ConfirmationDialogSectionProps) {
   return (
-    <BaseDialogHeader>
-      <BaseDialogTitle tabIndex={-1} className={confirmationDialogTitleClassName}>
+    <_BaseDialogHeader>
+      <_BaseDialogTitle tabIndex={-1} className={confirmationDialogTitleClassName}>
         {children}
-      </BaseDialogTitle>
-    </BaseDialogHeader>
+      </_BaseDialogTitle>
+    </_BaseDialogHeader>
   )
 }
 

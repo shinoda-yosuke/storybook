@@ -1,12 +1,12 @@
 import { useRef, type ReactElement, type ReactNode } from 'react'
 
 import {
-  BaseDialog,
-  BaseDialogClose,
-  BaseDialogContent,
-  BaseDialogFooter,
-  BaseDialogHeader,
-  BaseDialogTitle,
+  _BaseDialog,
+  _BaseDialogClose,
+  _BaseDialogContent,
+  _BaseDialogFooter,
+  _BaseDialogHeader,
+  _BaseDialogTitle,
 } from '@/components/base-dialog'
 import {
   assertConfirmationDialogParts,
@@ -43,7 +43,7 @@ function ConfirmDialog({
   assertConfirmationDialogParts(children, ConfirmDialogHeader, ConfirmDialogContent, 'ConfirmDialog')
 
   return (
-    <BaseDialog
+    <_BaseDialog
       open={open}
       disablePointerDismissal
       onOpenChange={(nextOpen, eventDetails) => {
@@ -53,7 +53,7 @@ function ConfirmDialog({
         }
       }}
     >
-      <BaseDialogContent
+      <_BaseDialogContent
         ref={contentRef}
         showCloseButton={false}
         initialFocus={() =>
@@ -69,10 +69,10 @@ function ConfirmDialog({
         {pending && (
           <p role="status" className="text-sm text-muted-foreground">処理中です。完了するまでお待ちください。</p>
         )}
-        <BaseDialogFooter>
-          <BaseDialogClose disabled={pending} render={<Button purpose="decline" />}>
+        <_BaseDialogFooter>
+          <_BaseDialogClose disabled={pending} render={<Button purpose="decline" />}>
             {cancelLabel}
-          </BaseDialogClose>
+          </_BaseDialogClose>
           <Button
             purpose="agree"
             disabled={pending}
@@ -83,19 +83,19 @@ function ConfirmDialog({
           >
             {pending ? '処理中…' : confirmLabel}
           </Button>
-        </BaseDialogFooter>
-      </BaseDialogContent>
-    </BaseDialog>
+        </_BaseDialogFooter>
+      </_BaseDialogContent>
+    </_BaseDialog>
   )
 }
 
 function ConfirmDialogHeader({ children }: ConfirmationDialogSectionProps) {
   return (
-    <BaseDialogHeader>
-      <BaseDialogTitle tabIndex={-1} className={confirmationDialogTitleClassName}>
+    <_BaseDialogHeader>
+      <_BaseDialogTitle tabIndex={-1} className={confirmationDialogTitleClassName}>
         {children}
-      </BaseDialogTitle>
-    </BaseDialogHeader>
+      </_BaseDialogTitle>
+    </_BaseDialogHeader>
   )
 }
 

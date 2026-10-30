@@ -3,26 +3,26 @@ import type { Meta, StoryObj } from '@storybook/tanstack-react'
 
 import { Button } from '@/elements/button'
 import {
-  BaseDialog,
-  BaseDialogClose,
-  BaseDialogContent,
-  BaseDialogDescription,
-  BaseDialogFooter,
-  BaseDialogHeader,
-  BaseDialogTitle,
-  BaseDialogTrigger,
+  _BaseDialog,
+  _BaseDialogClose,
+  _BaseDialogContent,
+  _BaseDialogDescription,
+  _BaseDialogFooter,
+  _BaseDialogHeader,
+  _BaseDialogTitle,
+  _BaseDialogTrigger,
 } from '@/components/base-dialog'
 
 const meta = {
-  title: 'Components/Dialog/#BaseDialog',
-  component: BaseDialogContent,
+  title: 'Components/Dialog/_BaseDialog',
+  component: _BaseDialogContent,
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
     docs: {
       description: {
         component:
-          '先頭の # は派生実装用の土台の目印。コード名と JSX タグは BaseDialog。派生コンポーネントを作る人向けに、パーツ構成・開閉・スクロール・フォームの組み立て方を掲載する。利用画面では、操作契約を固定した ConfirmDialog や CheckboxConfirmDialog を使う。',
+          '先頭の `_` は派生実装用の土台を表す命名規約。識別子・export 名・JSX タグ・表示名を `_BaseDialog` に統一している。派生コンポーネントを作る人向けに、パーツ構成・開閉・スクロール・フォームの組み立て方を掲載する。利用画面では、操作契約を固定した ConfirmDialog や CheckboxConfirmDialog を使う。',
       },
     },
   },
@@ -35,7 +35,7 @@ const meta = {
       description: '上部の閉じるボタンの有無。派生実装側で固定する項目',
     },
   },
-} satisfies Meta<typeof BaseDialogContent>
+} satisfies Meta<typeof _BaseDialogContent>
 
 export default meta
 
@@ -43,18 +43,18 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   render: (args) => (
-    <BaseDialog>
-      <BaseDialogTrigger render={<Button purpose="acknowledge" />}>ダイアログを開く</BaseDialogTrigger>
-      <BaseDialogContent {...args}>
-        <BaseDialogHeader>
-          <BaseDialogTitle>設定を変更しました</BaseDialogTitle>
-          <BaseDialogDescription>
+    <_BaseDialog>
+      <_BaseDialogTrigger render={<Button purpose="acknowledge" />}>ダイアログを開く</_BaseDialogTrigger>
+      <_BaseDialogContent {...args}>
+        <_BaseDialogHeader>
+          <_BaseDialogTitle>設定を変更しました</_BaseDialogTitle>
+          <_BaseDialogDescription>
             変更した内容は、次回のログインから適用されます。
-          </BaseDialogDescription>
-        </BaseDialogHeader>
-        <BaseDialogFooter showCloseButton />
-      </BaseDialogContent>
-    </BaseDialog>
+          </_BaseDialogDescription>
+        </_BaseDialogHeader>
+        <_BaseDialogFooter showCloseButton />
+      </_BaseDialogContent>
+    </_BaseDialog>
   ),
 }
 
@@ -63,25 +63,25 @@ export const CustomCloseButton: Story = {
   parameters: {
     docs: {
       description: {
-        story: '派生実装で BaseDialogClose に独自の文言と、ユーザーの意思に合う Button を組み合わせる例。',
+        story: '派生実装で `_BaseDialogClose` に独自の文言と、ユーザーの意思に合う Button を組み合わせる例。',
       },
     },
   },
   render: (args) => (
-    <BaseDialog>
-      <BaseDialogTrigger render={<Button purpose="acknowledge" />}>内容を確認する</BaseDialogTrigger>
-      <BaseDialogContent {...args}>
-        <BaseDialogHeader>
-          <BaseDialogTitle>内容を確認してください</BaseDialogTitle>
-          <BaseDialogDescription>
+    <_BaseDialog>
+      <_BaseDialogTrigger render={<Button purpose="acknowledge" />}>内容を確認する</_BaseDialogTrigger>
+      <_BaseDialogContent {...args}>
+        <_BaseDialogHeader>
+          <_BaseDialogTitle>内容を確認してください</_BaseDialogTitle>
+          <_BaseDialogDescription>
             お知らせを確認したら、ボタンを押して元の画面に戻れます。
-          </BaseDialogDescription>
-        </BaseDialogHeader>
-        <BaseDialogFooter>
-          <BaseDialogClose render={<Button purpose="acknowledge" />}>確認しました</BaseDialogClose>
-        </BaseDialogFooter>
-      </BaseDialogContent>
-    </BaseDialog>
+          </_BaseDialogDescription>
+        </_BaseDialogHeader>
+        <_BaseDialogFooter>
+          <_BaseDialogClose render={<Button purpose="acknowledge" />}>確認しました</_BaseDialogClose>
+        </_BaseDialogFooter>
+      </_BaseDialogContent>
+    </_BaseDialog>
   ),
 }
 
@@ -95,18 +95,18 @@ export const WithoutTopCloseButton: Story = {
     },
   },
   render: (args) => (
-    <BaseDialog>
-      <BaseDialogTrigger render={<Button purpose="acknowledge" />}>フッターで閉じる構成を開く</BaseDialogTrigger>
-      <BaseDialogContent {...args}>
-        <BaseDialogHeader>
-          <BaseDialogTitle>お知らせ</BaseDialogTitle>
-          <BaseDialogDescription>
+    <_BaseDialog>
+      <_BaseDialogTrigger render={<Button purpose="acknowledge" />}>フッターで閉じる構成を開く</_BaseDialogTrigger>
+      <_BaseDialogContent {...args}>
+        <_BaseDialogHeader>
+          <_BaseDialogTitle>お知らせ</_BaseDialogTitle>
+          <_BaseDialogDescription>
             内容を確認したら、下の閉じるボタンから元の画面に戻れます。
-          </BaseDialogDescription>
-        </BaseDialogHeader>
-        <BaseDialogFooter showCloseButton />
-      </BaseDialogContent>
-    </BaseDialog>
+          </_BaseDialogDescription>
+        </_BaseDialogHeader>
+        <_BaseDialogFooter showCloseButton />
+      </_BaseDialogContent>
+    </_BaseDialog>
   ),
 }
 
@@ -119,16 +119,16 @@ export const ScrollableContent: Story = {
     },
   },
   render: (args) => (
-    <BaseDialog>
-      <BaseDialogTrigger render={<Button purpose="acknowledge" />}>長い内容を開く</BaseDialogTrigger>
-      <BaseDialogContent
+    <_BaseDialog>
+      <_BaseDialogTrigger render={<Button purpose="acknowledge" />}>長い内容を開く</_BaseDialogTrigger>
+      <_BaseDialogContent
         {...args}
         className="max-h-[min(36rem,calc(100dvh-2rem))] grid-rows-[auto_minmax(0,1fr)_auto]"
       >
-        <BaseDialogHeader>
-          <BaseDialogTitle>ご利用の前に</BaseDialogTitle>
-          <BaseDialogDescription>サービスを利用する際の注意事項をご確認ください。</BaseDialogDescription>
-        </BaseDialogHeader>
+        <_BaseDialogHeader>
+          <_BaseDialogTitle>ご利用の前に</_BaseDialogTitle>
+          <_BaseDialogDescription>サービスを利用する際の注意事項をご確認ください。</_BaseDialogDescription>
+        </_BaseDialogHeader>
         <div className="min-h-0 space-y-4 overflow-y-auto pr-2">
           {Array.from({ length: 12 }, (_, index) => (
             <section key={index} className="space-y-2">
@@ -140,9 +140,9 @@ export const ScrollableContent: Story = {
             </section>
           ))}
         </div>
-        <BaseDialogFooter showCloseButton />
-      </BaseDialogContent>
-    </BaseDialog>
+        <_BaseDialogFooter showCloseButton />
+      </_BaseDialogContent>
+    </_BaseDialog>
   ),
 }
 
@@ -162,9 +162,9 @@ export const Controlled: Story = {
     return (
       <div className="flex flex-col items-center gap-3">
         <p role="status" className="text-sm text-muted-foreground">表示名: {name}</p>
-        <BaseDialog open={open} onOpenChange={setOpen}>
-          <BaseDialogTrigger render={<Button purpose="acknowledge" />}>表示名を編集</BaseDialogTrigger>
-          <BaseDialogContent {...args}>
+        <_BaseDialog open={open} onOpenChange={setOpen}>
+          <_BaseDialogTrigger render={<Button purpose="acknowledge" />}>表示名を編集</_BaseDialogTrigger>
+          <_BaseDialogContent {...args}>
             <form
               className="grid gap-4"
               onSubmit={(event) => {
@@ -174,10 +174,10 @@ export const Controlled: Story = {
                 setOpen(false)
               }}
             >
-              <BaseDialogHeader>
-                <BaseDialogTitle>表示名を編集</BaseDialogTitle>
-                <BaseDialogDescription>プロフィールに表示する名前を変更できます。</BaseDialogDescription>
-              </BaseDialogHeader>
+              <_BaseDialogHeader>
+                <_BaseDialogTitle>表示名を編集</_BaseDialogTitle>
+                <_BaseDialogDescription>プロフィールに表示する名前を変更できます。</_BaseDialogDescription>
+              </_BaseDialogHeader>
               <div className="grid gap-2">
                 <label htmlFor={nameId} className="font-medium">表示名</label>
                 <input
@@ -189,13 +189,13 @@ export const Controlled: Story = {
                   className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
                 />
               </div>
-              <BaseDialogFooter>
-                <BaseDialogClose render={<Button purpose="decline" />}>キャンセル</BaseDialogClose>
+              <_BaseDialogFooter>
+                <_BaseDialogClose render={<Button purpose="decline" />}>キャンセル</_BaseDialogClose>
                 <Button purpose="agree" type="submit">保存</Button>
-              </BaseDialogFooter>
+              </_BaseDialogFooter>
             </form>
-          </BaseDialogContent>
-        </BaseDialog>
+          </_BaseDialogContent>
+        </_BaseDialog>
       </div>
     )
   },

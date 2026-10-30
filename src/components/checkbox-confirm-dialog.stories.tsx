@@ -20,7 +20,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'BaseDialog を包み、チェックするまで確定できないダイアログ。子要素に CheckboxConfirmDialogHeader と CheckboxConfirmDialogContent をこの順で1つずつ渡す。見出しには inline code などの JSX、本文には表などを入れられる。チェック状態は内部で管理し、開くたびに未チェックに戻る。ボタン構成と閉じ方は派生コンポーネント側で固定する。背景のクリックでは閉じず、Esc キーはキャンセルとして扱う。最初のフォーカスは見出しに置く。開閉は親が `open` で管理し、各コールバックで閉じる。',
+          '`_BaseDialog` を包み、チェックするまで確定できないダイアログ。子要素に CheckboxConfirmDialogHeader と CheckboxConfirmDialogContent をこの順で1つずつ渡す。見出しには inline code などの JSX、本文には表などを入れられる。チェック状態は内部で管理し、開くたびに未チェックに戻る。ボタン構成と閉じ方は派生コンポーネント側で固定する。背景のクリックでは閉じず、Esc キーはキャンセルとして扱う。最初のフォーカスは見出しに置く。開閉は親が `open` で管理し、各コールバックで閉じる。',
       },
     },
   },

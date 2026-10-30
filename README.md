@@ -11,13 +11,13 @@ https://storybook.disneyland.workers.dev （WARP につながった端末から�
 | 分類 | フォルダ | 責務 |
 |---|---|---|
 | Elements | `src/elements` | 不特定の Components で使える汎用部品。Props は目的・操作・状態で定義する |
-| Components | `src/components` | BaseX を包んで機能を絞り、体験・操作を固定した派生部品 |
+| Components | `src/components` | `_BaseX` を包んで機能を絞り、体験・操作を固定した派生部品 |
 | Layouts / Global | `src/layouts/global` | 画面全体の配置だけを決める枠 |
 | Layouts / Local | `src/layouts/local` | 主にコンテンツ内の配置だけを決める枠 |
 
 Elements・画面から使う派生 Components に `variant="outline"` などの見た目を選ぶ Props や、`className`・`style`・`render` による見た目の差し替えは設けません。色・角丸・影・文字装飾は内部で決めます。幅・間隔・整列・分割比率は配置の責務とし、`size` や Button の `width="content" | "fill"` は配置用として許可します。
 
-BaseX は派生実装から使います。画面や通常の Storybook の使用例は用途別の派生を使い、「大きいダイアログ」など見た目による派生は作りません。Storybook は土台も派生も `Components` の同じ系列内にまとめ、土台の表示名には `#BaseX` と `#` の目印を付けます。土台の Story は派生実装者向けのリファレンスで、BaseX を直接組み立てて構造・機能・コードを確認できます。TypeScript の識別子と Show code の JSX タグは `BaseX` のままです。Layouts は任意の `ReactNode` を受け取り、特定の部品や操作に依存しません。
+`_BaseX` は派生実装から使います。土台のコンポーネント（関数・クラス）の識別子、export / import 名、JSX タグ、displayName、Storybook の表示名を `_BaseX` のように `_` 始まりに統一します。各パーツも `_BaseDialogContent` など同じ規約です。画面や通常の Storybook の使用例は用途別の派生を使い、「大きいダイアログ」など見た目による派生は作りません。Storybook は土台も派生も `Components` の同じ系列内にまとめます。土台の Story は派生実装者向けのリファレンスで、`_BaseX` を直接組み立てて構造・機能・コードを確認できます。Layouts は任意の `ReactNode` を受け取り、特定の部品や操作に依存しません。
 
 ## 使っているもの
 
@@ -35,13 +35,13 @@ bun run storybook         # Storybook を http://localhost:6006 で起動する
 bun run build-storybook   # storybook-static/ に静的ファイルを出す
 bun run dev               # アプリを起動する
 bun run typecheck         # 型チェック
-bun run check:architecture # 層の依存と BaseX の直接利用を確認する
+bun run check:architecture # 層の依存と _BaseX の命名・参照を確認する
 bun run test              # 公開 API の動作を確認する
 ```
 
 ## 部品を足す
 
-shadcn の部品は `src/elements` に生成されます（`components.json` の `aliases.ui`）。生成した API はそのまま公開せず、目的で定義した Props に直します。複合部品は BaseX と用途別の派生に分けて `src/components` に移します。
+shadcn の部品は `src/elements` に生成されます（`components.json` の `aliases.ui`）。生成した API はそのまま公開せず、目的で定義した Props に直します。複合部品は `_BaseX` と用途別の派生に分けて `src/components` に移します。
 
 ```sh
 bunx --bun shadcn@latest add <name>
@@ -69,14 +69,14 @@ HTML の `type` は `purpose` と独立した動作の指定です。既定は `
 
 ## ダイアログ
 
-`BaseDialog` は派生実装専用の土台です。Storybook の `Components/Dialog/#BaseDialog` に、派生を作る人向けの構成・開閉・スクロール・フォームのリファレンスを掲載します。利用画面では操作を固定した次の派生部品を使い、同じ `Components/Dialog` で使用例を確認します。
+`_BaseDialog` は派生実装専用の土台です。Storybook の `Components/Dialog/_BaseDialog` に、派生を作る人向けの構成・開閉・スクロール・フォームのリファレンスを掲載します。利用画面では操作を固定した次の派生部品を使い、同じ `Components/Dialog` で使用例を確認します。
 
 | 部品 | 固定するもの |
 |---|---|
 | `ConfirmDialog` | Header と Content の配置・キャンセルと確定の2つのボタン |
 | `CheckboxConfirmDialog` | 上記の構成に、チェックするまで確定できないチェックボックスを加える |
 
-専用の部品は独立した Props を持ち、BaseDialog の Props を継承・転送しません。呼び出し側に指定できるのは `open`、`pending`、`error`、各ラベル、`children`、`onConfirm`、`onCancel` です。`children` には専用の Header と Content をこの順で1つずつ直接渡します。Header と Content は中身を `ReactNode` で受け取り、見出しには inline code、本文には表・リスト・独自コンポーネントなどを置けます。ボタン構成・閉じ方・チェック状態は派生コンポーネントが固定します。
+専用の部品は独立した Props を持ち、`_BaseDialog` の Props を継承・転送しません。呼び出し側に指定できるのは `open`、`pending`、`error`、各ラベル、`children`、`onConfirm`、`onCancel` です。`children` には専用の Header と Content をこの順で1つずつ直接渡します。Header と Content は中身を `ReactNode` で受け取り、見出しには inline code、本文には表・リスト・独自コンポーネントなどを置けます。ボタン構成・閉じ方・チェック状態は派生コンポーネントが固定します。
 
 `title`・`description` プロップスは使いません。Header の欠落・重複・順序違い、別種類のダイアログの Header / Content の混在は、型と実行時の確認で防ぎます。JSX の型では子要素の種類を完全には区別できないため、実行時にも専用の2要素かを確認します。
 
@@ -156,7 +156,8 @@ import { OneTwoSplitLayout } from '@/layouts/local/one-two-split-layout'
 
 - Button の `variant` を削除し、全使用箇所をユーザーの意思を表す `purpose` に移行しました。HTML の `type` は独立して指定し、既定は `button` です。
 - Button・Checkbox の `className`・`style`・`render` を削除しました。配置調整は外側のラッパーで行います。
-- BaseDialog のリファレンスを `Components/Dialog/#BaseDialog` に配置しました。コード名は `BaseDialog` です。利用画面では ConfirmDialog・CheckboxConfirmDialog の Header / Content 構成を使ってください。
+- 土台の識別子・export / import 名を `BaseDialog`・`BaseDialogContent` から `_BaseDialog`・`_BaseDialogContent` に移行しました。
+- `_BaseDialog` のリファレンスを `Components/Dialog/_BaseDialog` に配置しました。コード名は `_BaseDialog` です。利用画面では ConfirmDialog・CheckboxConfirmDialog の Header / Content 構成を使ってください。
 
 ## 公開
 
