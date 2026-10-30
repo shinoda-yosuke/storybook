@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/tanstack-react'
-import { ArrowRight, Plus, Trash2 } from 'lucide-react'
+import { ArrowRight, Check, Info } from 'lucide-react'
 import { fn } from 'storybook/test'
 
 import { Button, type ButtonProps, type ButtonPurpose } from '@/elements/button'
 
-const PURPOSES = ['submit', 'cancel', 'execute', 'delete'] as const satisfies readonly ButtonPurpose[]
+const PURPOSES = ['agree', 'agree-to-risk', 'decline', 'acknowledge'] as const satisfies readonly ButtonPurpose[]
 const TEXT_SIZES = ['xs', 'sm', 'default', 'lg'] as const satisfies readonly ButtonProps['size'][]
 const ICON_SIZES = ['icon-xs', 'icon-sm', 'icon', 'icon-lg'] as const satisfies readonly ButtonProps['size'][]
 const SIZES = [...TEXT_SIZES, ...ICON_SIZES]
@@ -18,13 +18,15 @@ const meta = {
     docs: {
       description: {
         component:
-          '複数のコンポーネントで使える操作用のボタン。必須の purpose で送信・キャンセル・実行・削除を指定する。見た目は内部で決まり、variant・className・style・render は公開しない。size は配置の制約に合わせて選べる。submit だけがフォームを送信し、他の操作は HTML の type="button" になる。画面の移動にはリンクを使う。',
+          'ユーザーを主語に、同意・危険な処理への同意・拒否・確認を表すボタン。purpose は意思表示、HTML の type は動作として独立させる。type の既定は button。size と width は配置用の Props で、色・角丸などの見た目は内部で決まる。variant・className・style・render は公開しない。画面の移動にはリンクを使う。',
       },
     },
   },
   args: {
-    children: '実行する',
-    purpose: 'execute',
+    children: '同意する',
+    purpose: 'agree',
+    type: 'button',
+    width: 'content',
     size: 'default',
     onClick: fn(),
   },
@@ -32,8 +34,18 @@ const meta = {
     purpose: {
       control: 'select',
       options: PURPOSES,
-      description: '操作の目的。submit はフォーム送信、cancel は取り消し、execute は実行、delete は削除',
+      description: 'ユーザーの意思表示。agree は同意、agree-to-risk は危険な処理への同意、decline は拒否、acknowledge は内容の認識・確認',
       table: { type: { summary: PURPOSES.join(' | ') } },
+    },
+    type: {
+      control: 'select',
+      options: ['button', 'submit', 'reset'],
+      description: 'HTML の動作。purpose とは独立し、明示した場合だけ送信やリセットを行う',
+    },
+    width: {
+      control: 'select',
+      options: ['content', 'fill'],
+      description: '配置上の幅。content は内容に合わせ、fill は配置先の幅を使う',
     },
     size: {
       control: 'select',
@@ -48,10 +60,15 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-export const Execute: Story = {}
-export const Submit: Story = { args: { purpose: 'submit', children: '送信する' } }
-export const Cancel: Story = { args: { purpose: 'cancel', children: 'キャンセル' } }
-export const Delete: Story = { args: { purpose: 'delete', children: '削除する' } }
+export const Agree: Story = {}
+export const AgreeToRisk: Story = { args: { purpose: 'agree-to-risk', children: '危険性を理解して同意する' } }
+export const Decline: Story = { args: { purpose: 'decline', children: '同意しない' } }
+export const Acknowledge: Story = { args: { purpose: 'acknowledge', children: '確認しました' } }
+
+export const FillWidth: Story = {
+  args: { width: 'fill' },
+  render: (args) => <div className="w-full max-w-sm"><Button {...args} /></div>,
+}
 
 export const Sizes: Story = {
   render: (args) => (
@@ -67,8 +84,8 @@ export const WithIcon: Story = {
   render: (args) => (
     <div className="flex flex-wrap items-center gap-2">
       <Button {...args}>
-        <Plus data-icon="inline-start" />
-        追加する
+        <Check data-icon="inline-start" />
+        同意する
       </Button>
       <Button {...args}>
         次へ進む
@@ -79,12 +96,12 @@ export const WithIcon: Story = {
 }
 
 export const IconOnly: Story = {
-  args: { purpose: 'delete' },
+  args: { purpose: 'acknowledge' },
   render: (args) => (
     <div className="flex flex-wrap items-center gap-2">
       {ICON_SIZES.map((size) => (
-        <Button key={size} {...args} size={size} aria-label="削除する">
-          <Trash2 />
+        <Button key={size} {...args} size={size} aria-label="内容を確認する">
+          <Info />
         </Button>
       ))}
     </div>
@@ -97,7 +114,7 @@ export const InForm: Story = {
   parameters: {
     docs: {
       description: {
-        story: '同じフォーム内でも submit だけが送信する。キャンセル・実行・削除を押しても送信回数は増えない。',
+        story: '同意・危険な処理への同意・拒否のどれも、明示的な type="submit" と組み合わせられる。type="button" の拒否や確認は送信しない。',
       },
     },
   },
@@ -111,19 +128,18 @@ export const InForm: Story = {
         onSubmit={(event) => {
           event.preventDefault()
           setSubmissions((count) => count + 1)
-          setLastAction('送信')
+          setLastAction('意思を送信しました')
         }}
       >
         <div className="flex flex-wrap gap-2">
-          <Button {...args} purpose="submit">送信する</Button>
-          <Button {...args} purpose="cancel" onClick={() => setLastAction('キャンセル')}>
-            キャンセル
+          <Button {...args} purpose="agree" type="submit">同意して送信する</Button>
+          <Button {...args} purpose="agree-to-risk" type="submit">危険性に同意して送信する</Button>
+          <Button {...args} purpose="decline" type="submit">拒否して送信する</Button>
+          <Button {...args} purpose="decline" type="button" onClick={() => setLastAction('拒否しました')}>
+            拒否する
           </Button>
-          <Button {...args} purpose="execute" onClick={() => setLastAction('実行')}>
-            実行する
-          </Button>
-          <Button {...args} purpose="delete" onClick={() => setLastAction('削除')}>
-            削除する
+          <Button {...args} purpose="acknowledge" type="button" onClick={() => setLastAction('確認しました')}>
+            確認しました
           </Button>
         </div>
         <p role="status" className="text-sm text-muted-foreground">

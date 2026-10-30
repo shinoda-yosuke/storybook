@@ -11,13 +11,13 @@ const meta = {
     docs: {
       description: {
         component:
-          '主にコンテンツ内で使う 1:2 の横分割。start と end に任意の ReactNode を渡す。768px 未満では start、end の順で縦に並ぶ。パネルの色や枠線、見出しなどの中身は Layout に含めない。',
+          '主にコンテンツ内で使う 1:2 の横分割。start と end に任意の ReactNode を渡す。配置先の幅が48rem未満なら start、end の順で縦に並ぶ。画面が広くても狭いパネルに置けば縦並びになる。パネルの色や枠線、見出しなどの中身は Layout に含めない。',
       },
     },
   },
   argTypes: {
-    start: { control: false, description: '横幅の 1/3 を使う側。狭い画面では先に表示する' },
-    end: { control: false, description: '横幅の 2/3 を使う側。狭い画面では後に表示する' },
+    start: { control: false, description: '横幅の 1/3 を使う側。配置先が狭い場合は先に表示する' },
+    end: { control: false, description: '横幅の 2/3 を使う側。配置先が狭い場合は後に表示する' },
   },
   args: {
     start: (
@@ -44,4 +44,15 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   render: (args) => <div className="p-4"><OneTwoSplitLayout {...args} /></div>,
+}
+
+export const InsideNarrowContainer: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: '画面幅を変えずに、幅36rem以下のコンテンツ内へ配置する例。ローカルの配置先が狭いので縦に並ぶ。',
+      },
+    },
+  },
+  render: (args) => <div className="max-w-xl p-4"><OneTwoSplitLayout {...args} /></div>,
 }

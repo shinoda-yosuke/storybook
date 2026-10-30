@@ -9,24 +9,29 @@ import { SidebarLayout } from '../src/layouts/global/sidebar-layout'
 import { OneTwoSplitLayout } from '../src/layouts/local/one-two-split-layout'
 
 describe('Button の操作の意味', () => {
-  test.each(['cancel', 'execute', 'delete'])('%s はフォームを送信しない', (purpose) => {
+  test.each(['agree', 'agree-to-risk', 'decline', 'acknowledge'])('%s は明示しなければフォームを送信しない', (purpose) => {
     const html = renderToStaticMarkup(h(Button, { purpose }, '操作'))
     expect(html).toContain('type="button"')
     expect(html).not.toContain('type="submit"')
   })
 
-  test('submit は指定したフォームを送信する', () => {
-    const html = renderToStaticMarkup(h(Button, { purpose: 'submit', form: 'settings' }, '保存'))
+  test.each(['agree', 'agree-to-risk', 'decline', 'acknowledge'])('%s とフォーム送信は両立する', (purpose) => {
+    const html = renderToStaticMarkup(h(Button, { purpose, type: 'submit', form: 'settings' }, '意思を送信'))
     expect(html).toContain('type="submit"')
     expect(html).toContain('form="settings"')
   })
 
+  test('明示的な reset もユーザーの意思とは独立して指定できる', () => {
+    const html = renderToStaticMarkup(h(Button, { purpose: 'decline', type: 'reset' }, '入力をやり直す'))
+    expect(html).toContain('type="reset"')
+  })
+
   test('無効な操作とアイコンのアクセシブルな名前を保持する', () => {
     const html = renderToStaticMarkup(h(Button, {
-      purpose: 'delete', size: 'icon', disabled: true, 'aria-label': '対象を削除する',
+      purpose: 'acknowledge', size: 'icon', disabled: true, 'aria-label': '内容を確認する',
     }))
     expect(html).toContain('disabled=""')
-    expect(html).toContain('aria-label="対象を削除する"')
+    expect(html).toContain('aria-label="内容を確認する"')
   })
 })
 

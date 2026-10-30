@@ -15,7 +15,7 @@ https://storybook.disneyland.workers.dev （WARP につながった端末から�
 | Layouts / Global | `src/layouts/global` | 画面全体の配置だけを決める枠 |
 | Layouts / Local | `src/layouts/local` | 主にコンテンツ内の配置だけを決める枠 |
 
-Elements・公開 Components に `variant="outline"` などの見た目を選ぶ Props や、`className`・`style`・`render` による見た目の差し替えは設けません。見た目は目的から内部で決めます。`size` は配置の制約を表すため許可します。
+Elements・公開 Components に `variant="outline"` などの見た目を選ぶ Props や、`className`・`style`・`render` による見た目の差し替えは設けません。色・角丸・影・文字装飾は内部で決めます。幅・間隔・整列・分割比率は配置の責務とし、`size` や Button の `width="content" | "fill"` は配置用として許可します。
 
 BaseX は派生実装からだけ使います。画面や Storybook の使用例は用途別の派生を使い、「大きいダイアログ」など見た目による派生は作りません。Layouts は任意の `ReactNode` を受け取り、特定の部品や操作に依存しません。
 
@@ -49,23 +49,23 @@ bunx --bun shadcn@latest add <name>
 
 ## Button
 
-`purpose` は必須です。操作を表す英語は動詞の `execute` に統一します。HTML の `type` との衝突を避けるため、操作の指定には `purpose` を使います。
+`purpose` は必須です。主語をユーザーに固定し、ユーザーがどの意思を表すかで分類します。`delete` のようなデータの状態変化を分類の軸にはしません。具体的な業務操作はボタンの文言とコールバックで表します。
 
-| purpose | 目的 | HTML の type |
-|---|---|---|
-| `submit` | フォームを送信する | `submit` |
-| `cancel` | 操作を取り消す・閉じる | `button` |
-| `execute` | 操作を実行する | `button` |
-| `delete` | 対象を削除する | `button` |
+| purpose | ユーザーの意思 |
+|---|---|
+| `agree` | 同意する |
+| `agree-to-risk` | 危険な処理であることを理解して同意する |
+| `decline` | 拒否する |
+| `acknowledge` | 内容を読んだ・認識したと確認する |
 
 ```tsx
-<Button purpose="submit">保存する</Button>
-<Button purpose="cancel" onClick={onCancel}>キャンセル</Button>
-<Button purpose="execute" onClick={onExecute}>実行する</Button>
-<Button purpose="delete" size="sm" onClick={onDelete}>削除する</Button>
+<Button purpose="agree" type="submit">同意する</Button>
+<Button purpose="agree-to-risk" type="submit">危険性を理解して同意する</Button>
+<Button purpose="decline" onClick={onDecline}>同意しない</Button>
+<Button purpose="acknowledge" width="fill" onClick={onAcknowledge}>確認しました</Button>
 ```
 
-キャンセル・実行・削除では、フォーム内でも送信しません。移動にはリンクを使います。見た目を取り出す `buttonVariants` は公開しません。Checkbox も選択や必須状態などの操作用 Props を受け取り、見た目を変更する Props は持ちません。
+HTML の `type` は `purpose` と独立した動作の指定です。既定は `button` で、`type="submit"`・`type="reset"` を明示した場合だけフォームを送信・リセットします。「拒否したことを送信する」場合も `purpose="decline" type="submit"` で表現できます。移動にはリンクを使います。見た目を取り出す `buttonVariants` は公開しません。Checkbox も選択や必須状態などの操作用 Props を受け取り、見た目を変更する Props は持ちません。
 
 ## ダイアログ
 
@@ -76,11 +76,13 @@ bunx --bun shadcn@latest add <name>
 | `ConfirmDialog` | Header と Content の配置・キャンセルと確定の2つのボタン |
 | `CheckboxConfirmDialog` | 上記の構成に、チェックするまで確定できないチェックボックスを加える |
 
-専用の部品は独立した Props を持ち、BaseDialog の Props を継承・転送しません。呼び出し側に指定できるのは `open`、各ラベル、`children`、`onConfirm`、`onCancel` です。`children` には専用の Header と Content をこの順で1つずつ直接渡します。Header と Content は中身を `ReactNode` で受け取り、見出しには inline code、本文には表・リスト・独自コンポーネントなどを置けます。ボタン構成・閉じ方・チェック状態は派生コンポーネントが固定します。
+専用の部品は独立した Props を持ち、BaseDialog の Props を継承・転送しません。呼び出し側に指定できるのは `open`、`pending`、`error`、各ラベル、`children`、`onConfirm`、`onCancel` です。`children` には専用の Header と Content をこの順で1つずつ直接渡します。Header と Content は中身を `ReactNode` で受け取り、見出しには inline code、本文には表・リスト・独自コンポーネントなどを置けます。ボタン構成・閉じ方・チェック状態は派生コンポーネントが固定します。
 
 `title`・`description` プロップスは使いません。Header の欠落・重複・順序違い、別種類のダイアログの Header / Content の混在は、型と実行時の確認で防ぎます。JSX の型では子要素の種類を完全には区別できないため、実行時にも専用の2要素かを確認します。
 
-どちらも背景のクリックでは閉じず、右上の閉じるボタンは表示しません。Esc キーはキャンセルとして扱い、開いたときは本文を先頭から読めるよう見出しにフォーカスします。チェック状態は内部で管理し、開くたびに未チェックから始めます。
+どちらも背景のクリックでは閉じず、右上の閉じるボタンは表示しません。確定はユーザーの同意、キャンセルは拒否として固定しています。危険な処理への同意が必要な体験は、専用の派生を追加して表現します。Esc キーはキャンセルとして扱い、開いたときは本文を先頭から読めるよう見出しにフォーカスします。閉じたときは、開いた要素が残っていればフォーカスを戻します。開いた要素が消える場合の次のフォーカス先は呼び出し側で決めます。
+
+非同期の処理は親が実行し、`pending`・`error`・`open` を管理します。`pending` 中は確定とキャンセルのボタン・Esc・チェック変更を無効にし、処理中の案内を表示します。失敗時は `pending` を解除し、`error` に任意の ReactNode を渡すと alert として伝えます。ダイアログは開いたまま再試行でき、チェック状態も保持します。閉じてから開いたときは未チェックに戻ります。成功時は親が閉じます。親からの `open` 変更まで制限するものではありません。
 
 開閉は親が `open` で管理し、`onConfirm` と `onCancel` で閉じます。
 
@@ -146,11 +148,13 @@ import { OneTwoSplitLayout } from '@/layouts/local/one-two-split-layout'
 </SidebarLayout>
 ```
 
-768px 以上ではサイドメニューが左列、ヘッダーとコンテンツが右列に並びます。1:2 分割は間隔を除いた残りの幅を分けます。768px 未満では、グローバルはヘッダー → サイドメニュー → コンテンツ、ローカルは start → end の順に縦に並べます。
+グローバルは画面幅が48rem以上ならサイドメニューが左列、ヘッダーとコンテンツが右列に並びます。それ未満ではヘッダー → サイドメニュー → コンテンツの順に縦に並べます。
+
+ローカルは画面幅ではなく、配置先の幅を基準にします。配置先が48rem以上なら、間隔を除いた幅を1:2に分けます。それ未満では start → end の順に縦に並びます。広い画面でも狭いパネルに置けば縦並びになります。
 
 ## 既存 API からの変更
 
-- Button の `variant` を削除し、全使用箇所を `purpose` に移行しました。HTML の `type` は `purpose` から決まります。
+- Button の `variant` を削除し、全使用箇所をユーザーの意思を表す `purpose` に移行しました。HTML の `type` は独立して指定し、既定は `button` です。
 - Button・Checkbox の `className`・`style`・`render` を削除しました。配置調整は外側のラッパーで行います。
 - BaseDialog の単独 Story を削除しました。既存の ConfirmDialog・CheckboxConfirmDialog の Header / Content 構成を使ってください。
 

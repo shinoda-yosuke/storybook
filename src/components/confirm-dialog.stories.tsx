@@ -2,6 +2,8 @@ import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/tanstack-react'
 import { fn } from 'storybook/test'
 
+import { useAsyncConfirmationExample } from '../../.storybook/use-async-confirmation-example'
+
 import { ConfirmDialog, ConfirmDialogHeader, ConfirmDialogContent } from '@/components/confirm-dialog'
 import { Button } from '@/elements/button'
 
@@ -14,7 +16,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'BaseDialog を包み、キャンセルと確定の2つの操作に絞ったダイアログ。子要素に ConfirmDialogHeader と ConfirmDialogContent をこの順で1つずつ渡す。見出しには inline code などの JSX、本文には表やリストなどを入れられる。ボタン構成と閉じ方は親側で固定する。背景のクリックでは閉じず、Esc キーはキャンセルとして扱う。最初のフォーカスは見出しに置く。開閉は親が `open` で管理し、各コールバックで閉じる。',
+          'BaseDialog を包み、キャンセルと確定の2つの操作に絞ったダイアログ。子要素に ConfirmDialogHeader と ConfirmDialogContent をこの順で1つずつ渡す。見出しには inline code などの JSX、本文には表やリストなどを入れられる。ボタン構成と閉じ方は派生コンポーネント側で固定する。背景のクリックでは閉じず、Esc キーはキャンセルとして扱う。最初のフォーカスは見出しに置く。開閉は親が `open` で管理し、各コールバックで閉じる。',
       },
     },
   },
@@ -36,6 +38,8 @@ const meta = {
     children: { control: false, description: 'ConfirmDialogHeader と ConfirmDialogContent をこの順で1つずつ渡す' },
     confirmLabel: { control: 'text', description: '確定ボタンの文言' },
     cancelLabel: { control: 'text', description: 'キャンセルボタンの文言' },
+    pending: { control: false, description: '親が管理する処理中の状態。処理中は確定・キャンセル・Esc を無効にする' },
+    error: { control: false, description: '失敗時の内容。任意の ReactNode を読み上げ可能な alert として表示する' },
     onConfirm: { control: false, description: '確定時の処理。親で open を false にして閉じる' },
     onCancel: { control: false, description: 'キャンセル時の処理。Esc キーでも呼ばれる' },
   },
@@ -45,7 +49,7 @@ const meta = {
 
     return (
       <div className="flex flex-col items-center gap-3">
-        <Button purpose="execute" onClick={() => setOpen(true)}>
+        <Button purpose="acknowledge" onClick={() => setOpen(true)}>
           確認ダイアログを開く
         </Button>
         <p role="status" className="text-sm text-muted-foreground">結果: {result}</p>
@@ -114,5 +118,36 @@ export const WithInlineCode: Story = {
       <ConfirmDialogContent>この ID に紐づく設定を更新します。</ConfirmDialogContent>,
     ],
     confirmLabel: '変更する',
+  },
+}
+
+export const AsyncConfirmation: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: '親が pending・error・open を管理する例。通信の代わりに800ms待ち、最初は失敗、再試行で成功する。処理中は二重実行とキャンセルを防ぎ、失敗時は開いたまま再試行できる。',
+      },
+    },
+  },
+  render: function Render(args) {
+    const example = useAsyncConfirmationExample()
+
+    return (
+      <div className="grid justify-items-center gap-3">
+        <Button purpose="acknowledge" onClick={example.show}>非同期の確認を開く</Button>
+        <p role="status" className="text-sm text-muted-foreground">結果: {example.result} / 試行回数: {example.attempts}</p>
+        <ConfirmDialog
+          {...args}
+          open={example.open}
+          pending={example.pending}
+          error={example.error}
+          onConfirm={example.confirm}
+          onCancel={example.cancel}
+        >
+          {args.children[0]}
+          {args.children[1]}
+        </ConfirmDialog>
+      </div>
+    )
   },
 }

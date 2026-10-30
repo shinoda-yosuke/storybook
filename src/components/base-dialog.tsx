@@ -61,7 +61,7 @@ function BaseDialogContent({
           <div className="absolute top-2 right-2">
             <DialogPrimitive.Close
               data-slot="dialog-close"
-              render={<Button purpose="cancel" size="icon-sm" />}
+              render={<Button purpose="decline" size="icon-sm" />}
             >
               <XIcon />
               <span className="sr-only">閉じる</span>
@@ -102,7 +102,7 @@ function BaseDialogFooter({
     >
       {children}
       {showCloseButton && (
-        <DialogPrimitive.Close render={<Button purpose="cancel" />}>
+        <DialogPrimitive.Close render={<Button purpose="decline" />}>
           閉じる
         </DialogPrimitive.Close>
       )}

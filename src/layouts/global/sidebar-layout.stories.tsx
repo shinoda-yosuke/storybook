@@ -62,7 +62,7 @@ export const WithConfirmation: Story = {
         <main className="grid content-start gap-4 p-4">
           <h1 className="text-xl font-semibold">設定</h1>
           <div>
-            <Button purpose="execute" onClick={() => setOpen(true)}>設定を適用する</Button>
+            <Button purpose="acknowledge" onClick={() => setOpen(true)}>設定を適用する</Button>
           </div>
           <p role="status">結果: {result}</p>
           <ConfirmDialog

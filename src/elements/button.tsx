@@ -6,12 +6,13 @@ const buttonStyles = cva(
   {
     variants: {
       purpose: {
-        submit: "bg-primary text-primary-foreground hover:bg-primary/80",
-        execute: "bg-primary text-primary-foreground hover:bg-primary/80",
-        cancel:
+        agree: "bg-primary text-primary-foreground hover:bg-primary/80",
+        "agree-to-risk":
+          "bg-destructive text-white hover:bg-[color-mix(in_oklch,var(--destructive),black_10%)] focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
+        decline:
           "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
-        delete:
-          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
+        acknowledge:
+          "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
       },
       size: {
         default:
@@ -26,6 +27,10 @@ const buttonStyles = cva(
           "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
         "icon-lg": "size-9",
       },
+      width: {
+        content: "",
+        fill: "w-full",
+      },
     },
     defaultVariants: {
       size: "default",
@@ -33,19 +38,23 @@ const buttonStyles = cva(
   }
 )
 
-type ButtonPurpose = "submit" | "cancel" | "execute" | "delete"
+type ButtonPurpose = "agree" | "agree-to-risk" | "decline" | "acknowledge"
 
 type ButtonProps = Omit<
   ButtonPrimitive.Props,
   "className" | "style" | "color" | "render" | "nativeButton" | "type"
 > & {
   purpose: ButtonPurpose
+  type?: "button" | "submit" | "reset"
   size?: NonNullable<VariantProps<typeof buttonStyles>["size"]>
+  width?: "content" | "fill"
 }
 
 function Button({
   purpose,
+  type = "button",
   size = "default",
+  width = "content",
   ...props
 }: ButtonProps) {
   return (
@@ -54,8 +63,8 @@ function Button({
       data-slot="button"
       data-purpose={purpose}
       nativeButton
-      type={purpose === "submit" ? "submit" : "button"}
-      className={buttonStyles({ purpose, size })}
+      type={type}
+      className={buttonStyles({ purpose, size, width })}
     />
   )
 }
