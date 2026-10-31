@@ -1,5 +1,7 @@
 import { Button } from '@/elements/button'
 import { Checkbox } from '@/elements/checkbox'
+import { TextInput } from '@/elements/text-input'
+import { EmailPasswordLoginForm } from '@/components/email-password-login-form'
 import { ConfirmDialog, ConfirmDialogHeader, ConfirmDialogContent, type ConfirmDialogProps } from '@/components/confirm-dialog'
 import { CheckboxConfirmDialog, CheckboxConfirmDialogHeader, CheckboxConfirmDialogContent, type CheckboxConfirmDialogProps } from '@/components/checkbox-confirm-dialog'
 import { OneTwoSplitLayout } from '@/layouts/local/one-two-split-layout'
@@ -9,6 +11,18 @@ export function checkPublicUIContracts() {
   void <Button purpose="agree" type="submit" size="sm" width="fill" form="settings">保存</Button>
   void <Button purpose="decline" disabled aria-label="閉じる" />
   void <Checkbox checked required name="agreement" onCheckedChange={() => {}} />
+  void <TextInput type="email" name="email" autoComplete="username" required />
+  void <EmailPasswordLoginForm onSubmit={() => {}} pending error={<p>再試行できます</p>} />
+  // @ts-expect-error 入力の見た目は内部で固定する
+  void <TextInput className="bg-red-500" />
+  // @ts-expect-error 入力の見た目は内部で固定する
+  void <TextInput style={{ color: 'red' }} />
+  // @ts-expect-error TextInput は文字の入力に限定する
+  void <TextInput type="checkbox" />
+  // @ts-expect-error 派生の入力項目は外から変更できない
+  void <EmailPasswordLoginForm onSubmit={() => {}}><input /></EmailPasswordLoginForm>
+  // @ts-expect-error 派生に見た目の変更を公開しない
+  void <EmailPasswordLoginForm onSubmit={() => {}} className="p-0" />
 
   // @ts-expect-error 目的の指定は必須
   void <Button>実行</Button>

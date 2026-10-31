@@ -14,6 +14,7 @@ https://storybook.disneyland.workers.dev （WARP につながった端末から�
 | Components | `src/components` | `_BaseX` を包んで機能を絞り、体験・操作を固定した派生部品 |
 | Layouts / Global | `src/layouts/global` | 画面全体の配置だけを決める枠 |
 | Layouts / Local | `src/layouts/local` | 主にコンテンツ内の配置だけを決める枠 |
+| Page Sample | `src/page-samples` | Layouts と派生 Components を組み合わせたページ全体の使用例 |
 
 Elements・画面から使う派生 Components に `variant="outline"` などの見た目を選ぶ Props や、`className`・`style`・`render` による見た目の差し替えは設けません。色・角丸・影・文字装飾は内部で決めます。幅・間隔・整列・分割比率は配置の責務とし、`size` や Button の `width="content" | "fill"` は配置用として許可します。
 
@@ -48,6 +49,16 @@ shadcn の部品は `src/elements` に生成されます（`components.json` の
 ```sh
 bunx --bun shadcn@latest add <name>
 ```
+
+## Page Sample
+
+`Page Sample` には、Layouts と派生 Components を組み合わせたページ全体の例を置きます。日本語の画面名とは別に英語の `Meta.id` を指定し、URL を安定させます。Show code では Layouts と各部品の組み合わせを確認できます。
+
+`Page Sample/ログイン` は `ContentLayout` と `EmailPasswordLoginForm` の使用例です。空欄・メール形式はブラウザで検証し、送信中は入力と再送信を止めます。失敗時は入力を保持してエラーにフォーカスし、修正して再試行できます。成功後は完了表示に移り、ログイン画面に戻る操作も試せます。
+
+デモ用の入力値はメールアドレス `demo@example.com`、パスワード `storybook-demo` です。それ以外の組み合わせでは失敗します。800ms の待ち時間をサンプル内で再現し、認証サーバーへの通信や入力値の保存は行いません。
+
+`EmailPasswordLoginForm` は `_BaseLoginForm` を包み、メールアドレスとパスワードの必須入力に特化した部品です。`onSubmit` は `{ email, password }` を受け取り、認証処理と `pending`・`error` は呼び出し側が管理します。汎用の文字入力には `Elements/TextInput` を使います。
 
 ## Button
 

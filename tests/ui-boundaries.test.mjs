@@ -13,6 +13,10 @@ describe('UI の依存ルール', () => {
     ['src/components/example.stories.tsx', './base-dialog'],
     ['src/components/index.ts', './base-dialog'],
     ['src/components/index.tsx', './base-dialog'],
+    ['src/page-samples/example.stories.tsx', '@/components/base-login-form'],
+    ['src/elements/example.tsx', '@/page-samples/example'],
+    ['src/components/example.tsx', '@/page-samples/example'],
+    ['src/layouts/global/example.tsx', '@/page-samples/example'],
   ])('%s から %s は参照できない', (importer, target) => {
     expect(violationsForSource(importer, `import * as UI from '${target}'`)).not.toBeEmpty()
   })
@@ -24,6 +28,8 @@ describe('UI の依存ルール', () => {
     ['src/routes/example.tsx', '@/layouts/global/sidebar-layout'],
     ['src/layouts/global/example.stories.tsx', '@/components/confirm-dialog'],
     ['src/layouts/global/example.tsx', '@/layouts/local/one-two-split-layout'],
+    ['src/page-samples/example.stories.tsx', '@/components/email-password-login-form'],
+    ['src/page-samples/example.stories.tsx', '@/layouts/global/content-layout'],
   ])('%s から %s は参照できる', (importer, target) => {
     expect(violationsForSource(importer, `import * as UI from '${target}'`)).toBeEmpty()
   })
