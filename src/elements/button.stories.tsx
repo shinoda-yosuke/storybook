@@ -60,17 +60,28 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-export const Agree: Story = {}
-export const AgreeToRisk: Story = { args: { purpose: 'agree-to-risk', children: '危険性を理解して同意する' } }
-export const Decline: Story = { args: { purpose: 'decline', children: '同意しない' } }
-export const Acknowledge: Story = { args: { purpose: 'acknowledge', children: '確認しました' } }
+export const Agree: Story = { name: '同意する' }
+export const AgreeToRisk: Story = {
+  name: '危険性を理解して同意する',
+  args: { purpose: 'agree-to-risk', children: '危険性を理解して同意する' },
+}
+export const Decline: Story = {
+  name: '拒否する',
+  args: { purpose: 'decline', children: '同意しない' },
+}
+export const Acknowledge: Story = {
+  name: '確認する',
+  args: { purpose: 'acknowledge', children: '確認しました' },
+}
 
 export const FillWidth: Story = {
+  name: '配置先の幅に合わせる',
   args: { width: 'fill' },
   render: (args) => <div className="w-full max-w-sm"><Button {...args} /></div>,
 }
 
 export const Sizes: Story = {
+  name: 'サイズ一覧',
   render: (args) => (
     <div className="flex flex-wrap items-center gap-2">
       {TEXT_SIZES.map((size) => (
@@ -81,6 +92,7 @@ export const Sizes: Story = {
 }
 
 export const WithIcon: Story = {
+  name: 'アイコン付き',
   render: (args) => (
     <div className="flex flex-wrap items-center gap-2">
       <Button {...args}>
@@ -96,6 +108,7 @@ export const WithIcon: Story = {
 }
 
 export const IconOnly: Story = {
+  name: 'アイコンのみ',
   args: { purpose: 'acknowledge' },
   render: (args) => (
     <div className="flex flex-wrap items-center gap-2">
@@ -108,9 +121,13 @@ export const IconOnly: Story = {
   ),
 }
 
-export const Disabled: Story = { args: { disabled: true } }
+export const Disabled: Story = {
+  name: '無効な状態',
+  args: { disabled: true },
+}
 
 export const InForm: Story = {
+  name: 'フォーム内での操作',
   parameters: {
     docs: {
       description: {

@@ -79,9 +79,10 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const Default: Story = { name: '基本' }
 
 export const CustomLabels: Story = {
+  name: '文言を変更する',
   args: {
     children: [
       <ConfirmDialogHeader>変更を保存しますか？</ConfirmDialogHeader>,
@@ -95,6 +96,7 @@ export const CustomLabels: Story = {
 }
 
 export const WithList: Story = {
+  name: 'リストを表示する',
   args: {
     children: [
       <ConfirmDialogHeader>通知設定を変更しますか？</ConfirmDialogHeader>,
@@ -112,6 +114,7 @@ export const WithList: Story = {
 }
 
 export const WithInlineCode: Story = {
+  name: '見出しにインラインコードを入れる',
   args: {
     children: [
       <ConfirmDialogHeader>ID: <code>hogehoge</code> を変更しますか？</ConfirmDialogHeader>,
@@ -122,6 +125,7 @@ export const WithInlineCode: Story = {
 }
 
 export const AsyncConfirmation: Story = {
+  name: '処理中と失敗後の再試行',
   parameters: {
     docs: {
       description: {

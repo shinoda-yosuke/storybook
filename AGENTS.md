@@ -2,6 +2,8 @@
 
 このファイルを、このリポジトリ内の UI 設計の最上位ルールとする。実装・公開 API・Storybook・README をこのルールにそろえる。shadcn/ui や Base UI の初期 API もそのまま採用せず、この設計に合わせる。
 
+Storybook の各 Story（各コンポーネント配下の例）は、`name` で日本語の表示名を指定する。export 名は英語の識別子として保ち、既存の Story ID・URL を維持する。`Meta.title` は分類とコンポーネント名を表し、下記の命名規約に従う。
+
 ## Elements — 複数の用途で使える部品
 
 - `src/elements` に置く。不特定の Components 内で使える汎用的な部品にする。

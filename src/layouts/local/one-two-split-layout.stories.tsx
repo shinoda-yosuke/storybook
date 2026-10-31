@@ -43,10 +43,12 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
+  name: '基本',
   render: (args) => <div className="p-4"><OneTwoSplitLayout {...args} /></div>,
 }
 
 export const InsideNarrowContainer: Story = {
+  name: '狭い領域に配置する',
   parameters: {
     docs: {
       description: {

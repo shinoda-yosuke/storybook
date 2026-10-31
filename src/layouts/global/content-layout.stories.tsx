@@ -33,9 +33,10 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const Default: Story = { name: '基本' }
 
 export const WithLocalLayout: Story = {
+  name: 'ローカルレイアウトを組み合わせる',
   args: {
     children: (
       <main className="grid gap-4 p-4">

@@ -31,8 +31,20 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
-export const InitiallyChecked: Story = { args: { defaultChecked: true } }
-export const Disabled: Story = { args: { disabled: true } }
-export const Indeterminate: Story = { args: { indeterminate: true } }
-export const Required: Story = { args: { required: true, name: 'selection' } }
+export const Default: Story = { name: '基本' }
+export const InitiallyChecked: Story = {
+  name: '初期状態でチェック済み',
+  args: { defaultChecked: true },
+}
+export const Disabled: Story = {
+  name: '無効な状態',
+  args: { disabled: true },
+}
+export const Indeterminate: Story = {
+  name: '一部が選択された状態',
+  args: { indeterminate: true },
+}
+export const Required: Story = {
+  name: 'チェック必須',
+  args: { required: true, name: 'selection' },
+}

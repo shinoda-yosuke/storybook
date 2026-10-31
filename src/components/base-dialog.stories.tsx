@@ -42,6 +42,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
+  name: '基本',
   render: (args) => (
     <_BaseDialog>
       <_BaseDialogTrigger render={<Button purpose="acknowledge" />}>ダイアログを開く</_BaseDialogTrigger>
@@ -59,6 +60,7 @@ export const Default: Story = {
 }
 
 export const CustomCloseButton: Story = {
+  name: '閉じるボタンを変更する',
   args: { showCloseButton: false },
   parameters: {
     docs: {
@@ -86,6 +88,7 @@ export const CustomCloseButton: Story = {
 }
 
 export const WithoutTopCloseButton: Story = {
+  name: '上部の閉じるボタンを省く',
   args: { showCloseButton: false },
   parameters: {
     docs: {
@@ -111,6 +114,7 @@ export const WithoutTopCloseButton: Story = {
 }
 
 export const ScrollableContent: Story = {
+  name: '本文をスクロールする',
   parameters: {
     docs: {
       description: {
@@ -147,6 +151,7 @@ export const ScrollableContent: Story = {
 }
 
 export const Controlled: Story = {
+  name: '開閉を制御する',
   parameters: {
     docs: {
       description: {

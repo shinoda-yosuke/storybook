@@ -85,9 +85,10 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const Default: Story = { name: '基本' }
 
 export const CustomLabels: Story = {
+  name: '文言を変更する',
   args: {
     children: [
       <CheckboxConfirmDialogHeader>申し込み内容の確認</CheckboxConfirmDialogHeader>,
@@ -128,6 +129,7 @@ function MembersTable() {
 MembersTable.displayName = 'MembersTable'
 
 export const WithTable: Story = {
+  name: '表を表示する',
   args: {
     children: [
       <CheckboxConfirmDialogHeader>メンバーを招待しますか？</CheckboxConfirmDialogHeader>,
@@ -139,6 +141,7 @@ export const WithTable: Story = {
 }
 
 export const WithInlineCode: Story = {
+  name: '見出しにインラインコードを入れる',
   args: {
     children: [
       <CheckboxConfirmDialogHeader>
@@ -154,6 +157,7 @@ export const WithInlineCode: Story = {
 }
 
 export const AsyncConfirmation: Story = {
+  name: '処理中と失敗後の再試行',
   parameters: {
     docs: {
       description: {

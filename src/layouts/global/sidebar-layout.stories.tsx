@@ -50,9 +50,10 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const Default: Story = { name: '基本' }
 
 export const WithConfirmation: Story = {
+  name: '確認ダイアログを組み合わせる',
   render: function Render(args) {
     const [open, setOpen] = useState(false)
     const [result, setResult] = useState('未操作')

@@ -19,6 +19,8 @@ Elements・画面から使う派生 Components に `variant="outline"` などの
 
 `_BaseX` は派生実装から使います。土台のコンポーネント（関数・クラス）の識別子、export / import 名、JSX タグ、displayName、Storybook の表示名を `_BaseX` のように `_` 始まりに統一します。各パーツも `_BaseDialogContent` など同じ規約です。画面や通常の Storybook の使用例は用途別の派生を使い、「大きいダイアログ」など見た目による派生は作りません。Storybook は土台も派生も `Components` の同じ系列内にまとめます。土台の Story は派生実装者向けのリファレンスで、`_BaseX` を直接組み立てて構造・機能・コードを確認できます。Layouts は任意の `ReactNode` を受け取り、特定の部品や操作に依存しません。
 
+各 Story の表示名は `name` で日本語にします。例えば export 名 `Agree` は「同意する」、`AgreeToRisk` は「危険性を理解して同意する」と表示します。export 名と `Meta.title` を維持するため、Story の ID・URL は変わりません。
+
 ## 使っているもの
 
 - React・TypeScript・Vite
