@@ -60,17 +60,17 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-export const Agree: Story = { name: '同意する' }
+export const Agree: Story = { name: '同意させる' }
 export const AgreeToRisk: Story = {
-  name: '危険性を理解して同意する',
+  name: '危険性を理解させて同意させる',
   args: { purpose: 'agree-to-risk', children: '危険性を理解して同意する' },
 }
 export const Decline: Story = {
-  name: '拒否する',
+  name: '拒否させる',
   args: { purpose: 'decline', children: '同意しない' },
 }
 export const Acknowledge: Story = {
-  name: '確認する',
+  name: '確認させる',
   args: { purpose: 'acknowledge', children: '確認しました' },
 }
 
