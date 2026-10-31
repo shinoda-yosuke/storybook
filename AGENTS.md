@@ -57,6 +57,15 @@ Storybook の各 Story（各コンポーネント配下の例）は、`name` で
 - Layouts は Components の系列ではないため、`_BaseX` と派生の規約は適用しない。
 - Storybook は `Layouts/Global/<名前>`、`Layouts/Local/<名前>` に分ける。
 
+## Page Sample — ページ全体の使用例
+
+- `src/page-samples` に置き、Storybook の `Page Sample/<画面名>` に掲載する。日本語の画面名には英語の `Meta.id` を明示し、ID と URL を安定させる。
+- Layouts と目的別の派生 Components を組み合わせ、画面としての使い方を示す。`_BaseX` を直接使わない。
+- 各部品の操作や見た目をページ内で作り直さない。共通化する入力部品は Elements、操作体験を固定するフォームなどは Components に置く。
+- サンプル用の状態・処理は実際の認証や業務データから独立させる。デモ用の値と操作方法は Docs に記載する。
+- Show code には Layouts と派生 Components の組み合わせが分かる JSX を表示する。
+- Elements・Components・Layouts は Page Sample に依存しない。
+
 ## 変更時の確認
 
 - 目的を表す Props か、見た目の選択肢を増やしていないかを先に確認する。

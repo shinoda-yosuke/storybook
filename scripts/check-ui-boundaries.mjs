@@ -47,6 +47,7 @@ export function violationsForSource(importer, source) {
     if (isStory(importer)) continue
 
     if (
+      (['elements', 'components', 'layouts'].includes(layer) && targetLayer === 'page-samples') ||
       (layer === 'elements' && ['components', 'layouts'].includes(targetLayer)) ||
       (layer === 'components' && targetLayer === 'layouts') ||
       (layer === 'layouts' && ['elements', 'components'].includes(targetLayer))
