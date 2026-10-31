@@ -1,12 +1,12 @@
-import { useRef, useState, type ReactElement } from 'react'
+import { useRef, useState, type ReactElement, type ReactNode } from 'react'
 
 import {
-  BaseDialog,
-  BaseDialogClose,
-  BaseDialogContent,
-  BaseDialogFooter,
-  BaseDialogHeader,
-  BaseDialogTitle,
+  _BaseDialog,
+  _BaseDialogClose,
+  _BaseDialogContent,
+  _BaseDialogFooter,
+  _BaseDialogHeader,
+  _BaseDialogTitle,
 } from '@/components/base-dialog'
 import {
   assertConfirmationDialogParts,
@@ -25,6 +25,8 @@ type CheckboxConfirmDialogProps = {
   checkboxLabel: string
   confirmLabel?: string
   cancelLabel?: string
+  pending?: boolean
+  error?: ReactNode
   onConfirm: () => void
   onCancel: () => void
 }
@@ -35,6 +37,8 @@ function CheckboxConfirmDialog({
   checkboxLabel,
   confirmLabel = '次へ',
   cancelLabel = 'キャンセル',
+  pending = false,
+  error,
   onConfirm,
   onCancel,
 }: CheckboxConfirmDialogProps) {
@@ -53,51 +57,65 @@ function CheckboxConfirmDialog({
   }
 
   return (
-    <BaseDialog
+    <_BaseDialog
       open={open}
       disablePointerDismissal
-      onOpenChange={(nextOpen) => {
-        if (!nextOpen) onCancel()
+      onOpenChange={(nextOpen, eventDetails) => {
+        if (!nextOpen) {
+          if (pending) eventDetails.cancel()
+          else onCancel()
+        }
       }}
     >
-      <BaseDialogContent
+      <_BaseDialogContent
         ref={contentRef}
         showCloseButton={false}
         initialFocus={() =>
           contentRef.current?.querySelector<HTMLElement>('[data-slot="dialog-title"]') ?? true
         }
+        finalFocus
         className="max-h-[calc(100dvh-2rem)] overflow-y-auto"
       >
         {children}
+        {error != null && typeof error !== 'boolean' && (
+          <div role="alert" className="text-sm text-destructive">{error}</div>
+        )}
+        {pending && (
+          <p role="status" className="text-sm text-muted-foreground">処理中です。完了するまでお待ちください。</p>
+        )}
         <label className="flex cursor-pointer items-start gap-2 text-sm leading-5">
-          <Checkbox checked={checked} onCheckedChange={setChecked} className="mt-0.5" />
+          <span className="mt-0.5 shrink-0">
+            <Checkbox checked={checked} onCheckedChange={setChecked} disabled={pending} />
+          </span>
           {checkboxLabel}
         </label>
-        <BaseDialogFooter>
-          <BaseDialogClose render={<Button variant="outline" />}>
+        <_BaseDialogFooter>
+          <_BaseDialogClose disabled={pending} render={<Button purpose="decline" />}>
             {cancelLabel}
-          </BaseDialogClose>
+          </_BaseDialogClose>
           <Button
-            disabled={!checked}
+            purpose="agree"
+            disabled={!checked || pending}
+            aria-busy={pending}
             onClick={() => {
-              if (checked) onConfirm()
+              if (checked && !pending) onConfirm()
             }}
           >
-            {confirmLabel}
+            {pending ? '処理中…' : confirmLabel}
           </Button>
-        </BaseDialogFooter>
-      </BaseDialogContent>
-    </BaseDialog>
+        </_BaseDialogFooter>
+      </_BaseDialogContent>
+    </_BaseDialog>
   )
 }
 
 function CheckboxConfirmDialogHeader({ children }: ConfirmationDialogSectionProps) {
   return (
-    <BaseDialogHeader>
-      <BaseDialogTitle tabIndex={-1} className={confirmationDialogTitleClassName}>
+    <_BaseDialogHeader>
+      <_BaseDialogTitle tabIndex={-1} className={confirmationDialogTitleClassName}>
         {children}
-      </BaseDialogTitle>
-    </BaseDialogHeader>
+      </_BaseDialogTitle>
+    </_BaseDialogHeader>
   )
 }
 

@@ -1,6 +1,6 @@
 name: ci
 
-# PR ごとに型チェックと Storybook のビルドを確かめる
+# PR ごとに設計ルール・操作の意味・型・Storybook のビルドを確かめる
 on:
   pull_request:
 
@@ -24,6 +24,12 @@ jobs:
 
       - name: Typecheck
         run: bun run typecheck
+
+      - name: Check UI architecture
+        run: bun run check:architecture
+
+      - name: Test public UI contracts
+        run: bun run test
 
       - name: Build Storybook
         run: bun run build-storybook

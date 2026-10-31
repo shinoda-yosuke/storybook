@@ -1,12 +1,12 @@
-import { useRef, type ReactElement } from 'react'
+import { useRef, type ReactElement, type ReactNode } from 'react'
 
 import {
-  BaseDialog,
-  BaseDialogClose,
-  BaseDialogContent,
-  BaseDialogFooter,
-  BaseDialogHeader,
-  BaseDialogTitle,
+  _BaseDialog,
+  _BaseDialogClose,
+  _BaseDialogContent,
+  _BaseDialogFooter,
+  _BaseDialogHeader,
+  _BaseDialogTitle,
 } from '@/components/base-dialog'
 import {
   assertConfirmationDialogParts,
@@ -23,6 +23,8 @@ type ConfirmDialogProps = {
   ]
   confirmLabel?: string
   cancelLabel?: string
+  pending?: boolean
+  error?: ReactNode
   onConfirm: () => void
   onCancel: () => void
 }
@@ -32,6 +34,8 @@ function ConfirmDialog({
   children,
   confirmLabel = '確認',
   cancelLabel = 'キャンセル',
+  pending = false,
+  error,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
@@ -39,40 +43,59 @@ function ConfirmDialog({
   assertConfirmationDialogParts(children, ConfirmDialogHeader, ConfirmDialogContent, 'ConfirmDialog')
 
   return (
-    <BaseDialog
+    <_BaseDialog
       open={open}
       disablePointerDismissal
-      onOpenChange={(nextOpen) => {
-        if (!nextOpen) onCancel()
+      onOpenChange={(nextOpen, eventDetails) => {
+        if (!nextOpen) {
+          if (pending) eventDetails.cancel()
+          else onCancel()
+        }
       }}
     >
-      <BaseDialogContent
+      <_BaseDialogContent
         ref={contentRef}
         showCloseButton={false}
         initialFocus={() =>
           contentRef.current?.querySelector<HTMLElement>('[data-slot="dialog-title"]') ?? true
         }
+        finalFocus
         className="max-h-[calc(100dvh-2rem)] overflow-y-auto"
       >
         {children}
-        <BaseDialogFooter>
-          <BaseDialogClose render={<Button variant="outline" />}>
+        {error != null && typeof error !== 'boolean' && (
+          <div role="alert" className="text-sm text-destructive">{error}</div>
+        )}
+        {pending && (
+          <p role="status" className="text-sm text-muted-foreground">処理中です。完了するまでお待ちください。</p>
+        )}
+        <_BaseDialogFooter>
+          <_BaseDialogClose disabled={pending} render={<Button purpose="decline" />}>
             {cancelLabel}
-          </BaseDialogClose>
-          <Button onClick={onConfirm}>{confirmLabel}</Button>
-        </BaseDialogFooter>
-      </BaseDialogContent>
-    </BaseDialog>
+          </_BaseDialogClose>
+          <Button
+            purpose="agree"
+            disabled={pending}
+            aria-busy={pending}
+            onClick={() => {
+              if (!pending) onConfirm()
+            }}
+          >
+            {pending ? '処理中…' : confirmLabel}
+          </Button>
+        </_BaseDialogFooter>
+      </_BaseDialogContent>
+    </_BaseDialog>
   )
 }
 
 function ConfirmDialogHeader({ children }: ConfirmationDialogSectionProps) {
   return (
-    <BaseDialogHeader>
-      <BaseDialogTitle tabIndex={-1} className={confirmationDialogTitleClassName}>
+    <_BaseDialogHeader>
+      <_BaseDialogTitle tabIndex={-1} className={confirmationDialogTitleClassName}>
         {children}
-      </BaseDialogTitle>
-    </BaseDialogHeader>
+      </_BaseDialogTitle>
+    </_BaseDialogHeader>
   )
 }
 
